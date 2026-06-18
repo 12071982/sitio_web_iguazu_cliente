@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const API_BASE = 'https://localhost:7047/api';
+  const API_BASE = 'https://iguazu.bsite.net/api';
   const grid = document.getElementById('paquetes-grid');
   const searchInput = document.getElementById('search-input');
   const filterTipo = document.getElementById('filter-tipo');

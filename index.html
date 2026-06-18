@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>IGUAZÚ Tours Express</title>
+  <link rel="icon" href="assets/img/logo.png" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+
+<body class="bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 min-h-screen">
+
+  <!-- NAV -->
+  <nav class="bg-white dark:bg-zinc-900 shadow-sm border-b border-gray-100 dark:border-zinc-800">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="text-xl font-extrabold text-green-600 tracking-tight">IGUAZÚ <span class="text-zinc-800 dark:text-white font-light">Tours Express</span></span>
+      </a>
+      <div class="flex items-center gap-6 text-sm font-semibold">
+        <a href="#" class="text-green-600 border-b-2 border-green-600 pb-0.5">Inicio</a>
+        <a href="destinos.html" class="text-zinc-600 dark:text-zinc-300 hover:text-green-600 transition-colors">Paquetes</a>
+        <a href="galeria.html" class="text-zinc-600 dark:text-zinc-300 hover:text-green-600 transition-colors">Galería</a>
+        <a href="registro.html" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl transition-colors">Registrarse</a>
+        <a href="https://www.facebook.com/TourExpressIguazu/" target="_blank" class="text-zinc-500 hover:text-green-600 transition-colors"><i class="fab fa-facebook-f"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO VIDEO -->
+  <section class="relative">
+    <video autoplay muted loop class="w-full h-96 object-cover">
+      <source src="assets/video/IGUAZU.webm" type="video/webm">
+      Tu navegador no soporta la reproducción de videos.
+    </video>
+    <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-center text-white">
+      <p class="text-green-300 font-semibold uppercase tracking-widest text-sm mb-2">
+        <i class="fas fa-map-marked-alt mr-2"></i>Región Junín, Perú
+      </p>
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-3 leading-tight">¡Siente lo bueno de viajar!</h1>
+      <p class="mt-2 text-green-100 text-lg max-w-xl mx-auto mb-6">Descubre todo lo que puedes conocer en la región Junín</p>
+      <a target="_blank" href="https://wa.me/51949804809?text=Hola%20quiero%20información%20sobre%20los%20paquetes%20para%20turismo"
+        class="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-xl transition-colors flex items-center gap-2">
+        <i class="fas fa-calendar-check"></i> Reservar ahora
+      </a>
+    </div>
+  </section>
+
+  <!-- MÁS BUSCADO -->
+  <section class="py-14 bg-white dark:bg-zinc-900">
+    <div class="container mx-auto px-4 text-center">
+      <p class="text-green-600 font-semibold uppercase tracking-widest text-sm mb-2"><i class="fas fa-star mr-2"></i>Destacados</p>
+      <h2 class="text-3xl font-extrabold mb-2">Lo más buscado por los viajeros</h2>
+      <p class="text-zinc-500 dark:text-zinc-400 max-w-xl mx-auto mb-10">Atrévete a vivir un momento inolvidable visitando increíbles lugares.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-4">
+
+        <div class="bg-zinc-50 dark:bg-zinc-800 rounded-2xl shadow-md overflow-hidden border border-gray-100 dark:border-zinc-700 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+          <div class="relative overflow-hidden h-44">
+            <img src="assets/img/img_13.jpg" alt="Valle del Mantaro" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+          </div>
+          <div class="p-4 text-left">
+            <h3 class="text-base font-bold text-zinc-800 dark:text-white">Valle del Mantaro</h3>
+            <p class="text-sm text-zinc-500 dark:text-zinc-400 flex items-center gap-1 mt-1"><i class="fas fa-map-marker-alt text-green-500 text-xs"></i>Junín</p>
+          </div>
+        </div>
+
+        <div class="bg-zinc-50 dark:bg-zinc-800 rounded-2xl shadow-md overflow-hidden border border-gray-100 dark:border-zinc-700 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+          <div class="relative overflow-hidden h-44">
+            <img src="assets/img/5555.jpg" alt="Nevado Huaytapallana" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+          </div>
+          <div class="p-4 text-left">
+            <h3 class="text-base font-bold text-zinc-800 dark:text-white">Nevado Huaytapallana</h3>
+            <p class="text-sm text-zinc-500 dark:text-zinc-400 flex items-center gap-1 mt-1"><i class="fas fa-map-marker-alt text-green-500 text-xs"></i>Junín</p>
+          </div>
+        </div>
+
+        <div class="bg-zinc-50 dark:bg-zinc-800 rounded-2xl shadow-md overflow-hidden border border-gray-100 dark:border-zinc-700 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+          <div class="relative overflow-hidden h-44">
+            <img src="assets/img/img_3.jpg" alt="Cañón de Shucto" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+          </div>
+          <div class="p-4 text-left">
+            <h3 class="text-base font-bold text-zinc-800 dark:text-white">Cañón de Shucto</h3>
+            <p class="text-sm text-zinc-500 dark:text-zinc-400 flex items-center gap-1 mt-1"><i class="fas fa-map-marker-alt text-green-500 text-xs"></i>Junín</p>
+          </div>
+        </div>
+
+        <div class="bg-zinc-50 dark:bg-zinc-800 rounded-2xl shadow-md overflow-hidden border border-gray-100 dark:border-zinc-700 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+          <div class="relative overflow-hidden h-44">
+            <img src="assets/img/img_1.jpg" alt="Oxapampa" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+          </div>
+          <div class="p-4 text-left">
+            <h3 class="text-base font-bold text-zinc-800 dark:text-white">Oxapampa</h3>
+            <p class="text-sm text-zinc-500 dark:text-zinc-400 flex items-center gap-1 mt-1"><i class="fas fa-map-marker-alt text-green-500 text-xs"></i>Pasco</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- UNA AVENTURA ÚNICA -->
+  <section class="py-14 bg-zinc-50 dark:bg-zinc-800">
+    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+      <div class="flex flex-col justify-center">
+        <p class="text-green-600 font-semibold uppercase tracking-widest text-sm mb-2"><i class="fas fa-hiking mr-2"></i>Experiencias</p>
+        <h2 class="text-3xl font-extrabold mb-4">Una aventura única</h2>
+        <p class="text-zinc-500 dark:text-zinc-400 leading-relaxed">¿Deseas vivir una aventura inolvidable? Escápate al Santuario Virgen de Cocharcas. Un destino estupendo para visitar este fin de semana y vivir una experiencia única en la zona central del país. ¡La pasaremos increíble!</p>
+      </div>
+      <img src="assets/img/img_8.jpg" alt="Aventura" class="w-full h-auto rounded-2xl shadow-lg object-cover">
+    </div>
+  </section>
+
+  <!-- INICIA TU AVENTURA -->
+  <section class="py-14 bg-white dark:bg-zinc-900">
+    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+      <img src="assets/img/viaje.jpeg" alt="Blog" class="w-full h-auto rounded-2xl shadow-lg object-cover">
+      <div class="flex flex-col justify-center">
+        <p class="text-green-600 font-semibold uppercase tracking-widest text-sm mb-2"><i class="fas fa-suitcase-rolling mr-2"></i>Lista de viaje</p>
+        <h2 class="text-3xl font-extrabold mb-4">Inicia tu aventura</h2>
+        <p class="text-zinc-500 dark:text-zinc-400 leading-relaxed mb-6">Que nada falte en tu equipaje. Completa esta lista y estarás preparado para todo en tu próximo viaje por el Perú.</p>
+        <a href="https://wa.me/51949804809?text=Hola%20quiero%20información%20sobre%20los%20paquetes%20para%20turismo"
+          target="_blank" class="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-xl transition-colors text-center flex items-center justify-center gap-2 w-fit">
+          <i class="fab fa-whatsapp"></i> Solicitar información
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MÁS INFORMACIÓN -->
+  <section class="py-14 bg-zinc-50 dark:bg-zinc-800">
+    <div class="container mx-auto px-4 text-center">
+      <p class="text-green-600 font-semibold uppercase tracking-widest text-sm mb-2"><i class="fas fa-info-circle mr-2"></i>Contacto</p>
+      <h2 class="text-3xl font-extrabold mb-10">Más Información</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-zinc-700">
+          <div class="w-12 h-12 bg-green-50 dark:bg-green-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-map-marker-alt text-green-600 text-xl"></i>
+          </div>
+          <h3 class="text-sm font-bold uppercase tracking-wide text-zinc-700 dark:text-zinc-300 mb-1">Dirección</h3>
+          <p class="text-zinc-500 dark:text-zinc-400">Huancayo, Perú</p>
+        </div>
+        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-zinc-700">
+          <div class="w-12 h-12 bg-green-50 dark:bg-green-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-phone text-green-600 text-xl"></i>
+          </div>
+          <h3 class="text-sm font-bold uppercase tracking-wide text-zinc-700 dark:text-zinc-300 mb-1">Contáctanos</h3>
+          <p class="text-zinc-500 dark:text-zinc-400">930 164 767</p>
+        </div>
+        <div class="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-zinc-700">
+          <div class="w-12 h-12 bg-green-50 dark:bg-green-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-share-alt text-green-600 text-xl"></i>
+          </div>
+          <h3 class="text-sm font-bold uppercase tracking-wide text-zinc-700 dark:text-zinc-300 mb-1">Síguenos</h3>
+          <div class="flex justify-center gap-4 mt-2">
+            <a href="https://www.facebook.com/TourExpressIguazu/" target="_blank" class="text-zinc-500 hover:text-green-600 transition-colors text-lg"><i class="fab fa-facebook-f"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="mt-8">
+        <a href="https://tours-express.vercel.app/" target="_blank" class="text-sm font-semibold text-zinc-500 hover:text-green-600 transition-colors uppercase tracking-widest">Intranet →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-white dark:bg-zinc-800 border-t border-gray-200 dark:border-zinc-700 py-8 mt-0">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="text-xl font-extrabold text-green-600">IGUAZÚ <span class="text-zinc-600 dark:text-zinc-300 font-light">Tours Express</span></div>
+      <div class="flex gap-6 text-sm text-zinc-500">
+        <a href="#" class="hover:text-green-600 transition-colors">Política de privacidad</a>
+        <a href="#" class="hover:text-green-600 transition-colors">Términos y Condiciones</a>
+      </div>
+      <p class="text-sm text-zinc-400">© 2025 Creado por Yésica. Todos los derechos reservados</p>
+    </div>
+  </footer>
+
+</body>
+</html>

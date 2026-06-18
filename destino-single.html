@@ -1,0 +1,2048 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout – IGUAZÚ Tours Express</title>
+  <link rel="icon" href="assets/img/logo.png" type="image/x-icon" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <!-- Estilos externos (incluye sección Yape) -->
+  <link rel="stylesheet" href="assets/css/styles.css" />
+
+  <style>
+    /* ── VARIABLES GLOBALES ─────────────────────────────── */
+    :root {
+      --bg-base: #0F172A;
+      --bg-card: #1F2937;
+      --bg-card2: #111827;
+      --accent: #10B981;
+      --accent-dark: #059669;
+      --accent-light: #34D399;
+      --border: #374151;
+      --text-main: #F9FAFB;
+      --text-muted: #9CA3AF;
+      --text-dim: #6B7280;
+      --danger: #EF4444;
+      --warning: #F59E0B;
+      /* ── Yape brand ── */
+      --yape-primary: #742384;
+      --yape-secondary: #8f3aa8;
+      --yape-bg: #ffffff;
+      --yape-border: #E5E7EB;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-base);
+      color: var(--text-main);
+      margin: 0;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── INPUTS ─────────────────────────────────────────── */
+    .field {
+      background: #fff;
+      color: #111827;
+      border: 2px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 10px 14px;
+      width: 100%;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      transition: border-color .2s;
+      outline: none;
+    }
+
+    .field:focus {
+      border-color: var(--accent);
+    }
+
+    .field.error {
+      border-color: var(--danger);
+    }
+
+    .field::placeholder {
+      color: #9CA3AF;
+    }
+
+    .field:disabled {
+      background: #F3F4F6;
+      cursor: not-allowed;
+    }
+
+    label.lbl {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    /* ── SPINNER ─────────────────────────────────────────── */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, .2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── PASAJERO CARD ──────────────────────────────────── */
+    .pasajero-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+      transition: border-color .3s;
+    }
+
+    .pasajero-card:focus-within {
+      border-color: var(--accent);
+    }
+
+    /* ── MODAL ───────────────────────────────────────────── */
+    #modal-pago {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .75);
+      backdrop-filter: blur(6px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #modal-pago.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 520px;
+      padding: 32px;
+      position: relative;
+      animation: slideUp .3s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── TABS ───────────────────────────────────────────── */
+    .tab-buttons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 10px 0;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 40px;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .tab-btn.active {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent);
+    }
+
+    .tab-btn.yape.active {
+      background: rgba(116, 35, 132, 0.12);
+      color: var(--yape-primary);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* ── CARD ICONS ──────────────────────────────────────── */
+    .card-icon {
+      font-size: 28px;
+      opacity: .3;
+      transition: opacity .2s, transform .2s;
+    }
+
+    .card-icon.active {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+
+    .card-icon.visa {
+      color: #1A1F71;
+    }
+
+    .card-icon.mc {
+      color: #EB001B;
+    }
+
+    .card-icon.amex {
+      color: #007BC1;
+    }
+
+    /* ── BOLETA ──────────────────────────────────────────── */
+    #boleta-wrapper {
+      display: none;
+      background: var(--bg-base);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .boleta {
+      background: #fff;
+      color: #111;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      width: 302px;
+      margin: 0 auto;
+      padding: 20px 16px;
+      border-radius: 4px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, .4);
+    }
+
+    .boleta hr {
+      border: none;
+      border-top: 1px dashed #aaa;
+      margin: 8px 0;
+    }
+
+    .boleta .b-center {
+      text-align: center;
+    }
+
+    .boleta .b-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 3px 0;
+    }
+
+    .boleta .b-bold {
+      font-weight: 700;
+    }
+
+    .boleta .b-title {
+      font-size: 14px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .boleta .b-big {
+      font-size: 16px;
+      font-weight: 800;
+      text-align: center;
+      color: #059669;
+    }
+
+    .boleta .b-badge {
+      display: inline-block;
+      background: #059669;
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    @media print {
+      body>*:not(#boleta-wrapper) {
+        display: none !important;
+      }
+
+      #boleta-wrapper {
+        display: block !important;
+        padding: 0 !important;
+        background: #fff !important;
+      }
+
+      .boleta {
+        box-shadow: none;
+        border-radius: 0;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      @page {
+        size: 80mm auto;
+        margin: 0;
+      }
+    }
+
+    /* ── MISC ────────────────────────────────────────────── */
+    .tag-required {
+      color: var(--danger);
+    }
+
+    .info-msg {
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .info-msg.ok {
+      color: var(--accent);
+    }
+
+    .info-msg.err {
+      color: var(--danger);
+    }
+
+    .info-msg.warn {
+      color: var(--warning);
+    }
+
+    .btn-pagar {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: #fff;
+      font-weight: 700;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 28px;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: opacity .2s, transform .1s;
+    }
+
+    .btn-pagar:hover {
+      opacity: .9;
+    }
+
+    .btn-pagar:active {
+      transform: scale(.98);
+    }
+
+    .btn-pagar:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+    }
+
+    .num-control {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .num-btn {
+      width: 36px;
+      height: 36px;
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s;
+    }
+
+    .num-btn:hover {
+      background: var(--border);
+    }
+
+    .num-display {
+      font-size: 24px;
+      font-weight: 800;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .summary-row:last-child {
+      border-bottom: none;
+    }
+
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent);
+      border-top: 2px solid var(--accent);
+      margin-top: 8px;
+    }
+
+    .verificape-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 20px;
+      border: 1px solid var(--accent);
+    }
+
+    .autocomplete-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--accent-light);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      border: 1px solid var(--accent);
+      margin-top: 4px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .edad-error-msg {
+      font-size: 12px;
+      margin-top: 4px;
+      color: var(--danger);
+      display: none;
+    }
+
+    /* ==================================================
+   YAPE – Sección de pago
+   ================================================== */
+
+    :root {
+      --yape-primary: #742384;
+      --yape-secondary: #8f3aa8;
+      --yape-bg: #ffffff;
+      --yape-border: #E5E7EB;
+      --yape-text: #374151;
+    }
+
+    /* ── Panel contenedor ─────────────────────────── */
+    .yape-panel {
+      background: var(--yape-bg);
+      border: 1px solid var(--yape-border);
+      border-radius: 18px;
+      padding: 28px 24px;
+    }
+
+    /* ── Encabezado ───────────────────────────────── */
+    .yape-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .yape-logo {
+      width: 250px;
+      margin: 0 auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .yape-title {
+      margin-top: 10px;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--yape-primary);
+    }
+
+    .yape-subtitle {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #6B7280;
+    }
+
+    /* ── Etiquetas de campo ───────────────────────── */
+    .yape-label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--yape-text);
+    }
+
+    /* ── Campo teléfono ───────────────────────────── */
+    .yape-phone-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .yape-country {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6B7280;
+      font-weight: 600;
+      font-size: 15px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .yape-phone {
+      width: 100%;
+      height: 50px;
+      border: 1.5px solid var(--yape-border);
+      border-radius: 10px;
+      padding-left: 52px;
+      font-size: 16px;
+      font-family: 'Outfit', sans-serif;
+      color: var(--yape-text);
+      outline: none;
+      background: #fff;
+      transition: border-color .2s;
+    }
+
+    .yape-phone:focus {
+      border-color: var(--yape-primary);
+    }
+
+    .yape-phone::placeholder {
+      color: #9CA3AF;
+    }
+
+    /* ── Título bloque OTP ────────────────────────── */
+    .yape-code-title {
+      margin-bottom: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--yape-text);
+    }
+
+    /* ── Casillas OTP ─────────────────────────────── */
+    .otp-container {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .otp-input {
+      width: 50px;
+      height: 56px;
+      border: 1.5px solid var(--yape-border);
+      border-radius: 10px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--yape-text);
+      outline: none;
+      background: #fff;
+      transition: border-color .2s, box-shadow .2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .otp-input:focus {
+      border-color: var(--yape-primary);
+      box-shadow: 0 0 0 3px rgba(116, 35, 132, 0.12);
+    }
+
+    /* ── Ayuda y código de prueba ─────────────────── */
+    .yape-help {
+      text-align: center;
+      font-size: 12px;
+      color: #6B7280;
+      margin-bottom: 10px;
+    }
+
+    .yape-test-code {
+      text-align: center;
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #9CA3AF;
+      margin-bottom: 18px;
+    }
+
+    .yape-test-code strong {
+      color: var(--yape-primary);
+      letter-spacing: 3px;
+      font-size: 13px;
+    }
+
+    /* ── Fila de total ────────────────────────────── */
+    .yape-total {
+      background: #F9FAFB;
+      border: 1px solid var(--yape-border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .yape-total span:first-child {
+      font-size: 13px;
+      color: #6B7280;
+    }
+
+    .yape-total span:last-child {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--yape-primary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Botón principal ──────────────────────────── */
+    .btn-yape {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      height: 50px;
+      background: var(--yape-primary);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+      font-family: 'Outfit', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-yape:hover {
+      background: var(--yape-secondary);
+    }
+
+    .btn-yape:active {
+      transform: scale(0.98);
+    }
+
+    .btn-yape:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* ── Responsive: pantallas pequeñas ──────────── */
+    @media (max-width: 400px) {
+      .otp-input {
+        width: 42px;
+        height: 50px;
+        font-size: 18px;
+      }
+
+      .otp-container {
+        gap: 6px;
+      }
+
+      .yape-panel {
+        padding: 20px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav style="background:#111827; border-bottom:1px solid #1F2937;">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="index.html" class="text-xl font-extrabold" style="color:var(--accent);">IGUAZÚ Tours Express</a>
+      <div class="flex items-center gap-4 text-sm" style="color:var(--text-muted);">
+        <a href="index.html" class="hover:text-white transition-colors">Inicio</a>
+        <a href="destinos.html" class="hover:text-white transition-colors">Destinos</a>
+        <a href="galeria.html" class="hover:text-white transition-colors">Galería</a>
+        <a href="registro.html" class="px-4 py-1.5 rounded-lg font-semibold text-white"
+          style="background:var(--accent);">Registrarse</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CHECKOUT PRINCIPAL -->
+  <div id="checkout-wrapper" class="container mx-auto px-4 py-10" style="max-width:1100px;">
+
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 text-sm mb-8" style="color:var(--text-dim);">
+      <a href="destinos.html" class="hover:text-white transition-colors">Destinos</a>
+      <i class="fas fa-chevron-right text-xs"></i>
+      <span style="color:var(--accent);">Checkout</span>
+    </div>
+
+    <!-- Loading -->
+    <div id="pkg-loading" class="text-center py-20">
+      <div class="spinner mx-auto mb-4" style="width:40px;height:40px;border-width:4px;"></div>
+      <p style="color:var(--text-muted);">Cargando información del paquete…</p>
+    </div>
+
+    <!-- Error -->
+    <div id="pkg-error" class="hidden text-center py-20">
+      <i class="fas fa-exclamation-triangle text-5xl mb-4" style="color:var(--warning);"></i>
+      <p class="text-lg font-semibold">No se pudo cargar el paquete</p>
+      <p style="color:var(--text-muted);">Verifica que el servidor esté corriendo.</p>
+      <a href="destinos.html" class="mt-4 inline-block px-6 py-2 rounded-lg font-semibold text-white"
+        style="background:var(--accent);">Volver a destinos</a>
+    </div>
+
+    <!-- Grid principal -->
+    <div id="checkout-main" class="hidden grid gap-8" style="grid-template-columns:1fr 360px; align-items:start;">
+
+      <!-- COLUMNA IZQUIERDA -->
+      <div>
+
+        <!-- Tarjeta del paquete -->
+        <div id="pkg-card" class="rounded-2xl overflow-hidden mb-8 flex gap-0 relative"
+          style="background:var(--bg-card); border:1px solid var(--border);">
+          <img id="pkg-img" src="" alt="" class="object-cover" style="width:200px;height:160px;flex-shrink:0;"
+            onerror="this.src='assets/img/viaje.jpeg'">
+          <div class="p-6 flex flex-col justify-center flex-grow">
+            <span id="pkg-tipo" class="text-xs font-bold px-3 py-1 rounded-full uppercase self-start mb-2"
+              style="background:var(--accent);color:#fff;"></span>
+            <h1 id="pkg-nombre" class="text-xl font-extrabold mb-1"></h1>
+            <p id="pkg-desc" class="text-sm mb-3" style="color:var(--text-muted);"></p>
+            <div class="flex items-center gap-4 text-sm" style="color:var(--text-dim);">
+              <span id="pkg-duracion"><i class="fas fa-clock mr-1" style="color:var(--accent);"></i></span>
+            </div>
+          </div>
+          <div class="absolute top-4 right-4 text-right">
+            <p class="text-xs font-semibold" style="color:var(--text-muted);">Por persona</p>
+            <p id="pkg-precio" class="text-2xl font-extrabold" style="color:var(--accent);"></p>
+          </div>
+        </div>
+
+        <!-- Número de pasajeros -->
+        <div class="pasajero-card mb-8">
+          <p class="section-title"><i class="fas fa-users mr-2"></i>Número de pasajeros</p>
+          <div class="num-control">
+            <button class="num-btn" onclick="changePasajeros(-1)">−</button>
+            <span class="num-display" id="num-display">1</span>
+            <button class="num-btn" onclick="changePasajeros(1)">+</button>
+            <span class="text-sm ml-2" style="color:var(--text-muted);">persona(s)</span>
+          </div>
+        </div>
+
+        <!-- Formularios de pasajeros -->
+        <div id="pasajeros-container"></div>
+
+      </div>
+
+      <!-- COLUMNA DERECHA: RESUMEN -->
+      <div style="position:sticky; top:24px;">
+        <div class="rounded-2xl p-6" style="background:var(--bg-card); border:1px solid var(--border);">
+          <p class="section-title"><i class="fas fa-receipt mr-2"></i>Resumen de pago</p>
+          <div id="summary-pkg-nombre" class="font-semibold mb-4" style="color:var(--text-main);"></div>
+          <div class="summary-row">
+            <span style="color:var(--text-muted);">Precio por persona</span>
+            <span id="sum-unit" class="mono font-semibold"></span>
+          </div>
+          <div class="summary-row">
+            <span style="color:var(--text-muted);">Pasajeros</span>
+            <span id="sum-qty" class="mono font-semibold"></span>
+          </div>
+          <div class="summary-row">
+            <span style="color:var(--text-muted);">Subtotal (sin IGV)</span>
+            <span id="sum-subtotal" class="mono"></span>
+          </div>
+          <div class="summary-row">
+            <span style="color:var(--text-muted);">IGV (18%)</span>
+            <span id="sum-igv" class="mono"></span>
+          </div>
+          <div class="summary-total">
+            <span>TOTAL</span>
+            <span id="sum-total" class="mono"></span>
+          </div>
+          <button class="btn-pagar mt-6" onclick="abrirModalPago()">
+            <i class="fas fa-lock"></i><span>Pagar ahora</span>
+          </button>
+          <div class="flex items-center justify-center gap-2 mt-4 text-xs" style="color:var(--text-dim);">
+            <i class="fas fa-shield-alt" style="color:var(--accent);"></i>Pago seguro y cifrado
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL DE PAGO CON TABS (TARJETA + YAPE)
+  ============================================================ -->
+  <div id="modal-pago">
+    <div class="modal-box">
+      <div class="flex items-center justify-between mb-2">
+        <div>
+          <h2 class="text-lg font-extrabold">Método de pago</h2>
+          <p class="text-xs mt-0.5" style="color:var(--text-muted);">Selecciona cómo deseas pagar</p>
+        </div>
+        <button onclick="cerrarModalPago()"
+          class="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+          style="background:var(--bg-card2); color:var(--text-muted);" onmouseover="this.style.background='#374151'"
+          onmouseout="this.style.background='var(--bg-card2)'">
+          <i class="fas fa-times text-sm"></i>
+        </button>
+      </div>
+
+      <!-- TABS -->
+      <div class="tab-buttons">
+        <button id="tab-tarjeta-btn" class="tab-btn active" onclick="selectPaymentMethod('tarjeta')">
+          <i class="fas fa-credit-card"></i> Tarjeta
+        </button>
+        <button id="tab-yape-btn" class="tab-btn yape" onclick="selectPaymentMethod('yape')">
+          <i class="fas fa-mobile-alt"></i> Yape
+        </button>
+      </div>
+
+      <!-- ── TAB: TARJETA ─────────────────────────────────── -->
+      <div id="tab-tarjeta" class="tab-content active">
+        <div class="flex items-center gap-3 mb-6 p-3 rounded-xl" style="background:var(--bg-card2);">
+          <i id="icon-visa" class="fab fa-cc-visa card-icon visa"></i>
+          <i id="icon-mc" class="fab fa-cc-mastercard card-icon mc"></i>
+          <i id="icon-amex" class="fab fa-cc-amex card-icon amex"></i>
+          <span id="brand-label" class="ml-auto text-sm font-semibold" style="color:var(--text-muted);">Tarjeta
+            detectada automáticamente</span>
+        </div>
+
+        <div class="mb-4">
+          <label class="lbl">Número de tarjeta <span class="tag-required">*</span></label>
+          <input id="card-num" class="field mono" type="text" placeholder="0000 0000 0000 0000" maxlength="19"
+            oninput="formatCardNum(this)" autocomplete="cc-number" />
+          <p id="err-card-num" class="info-msg err hidden"></p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="lbl">Fecha expiración <span class="tag-required">*</span></label>
+            <input id="card-exp" class="field mono" type="text" placeholder="MM/AA" maxlength="5"
+              oninput="formatExpiry(this)" autocomplete="cc-exp" />
+            <p id="err-card-exp" class="info-msg err hidden"></p>
+          </div>
+          <div>
+            <label class="lbl">CVV <span class="tag-required">*</span></label>
+            <input id="card-cvv" class="field mono" type="password" placeholder="•••" maxlength="4"
+              oninput="this.value=this.value.replace(/\D/g,'')" autocomplete="cc-csc" />
+            <p id="err-card-cvv" class="info-msg err hidden"></p>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="lbl">Nombre en la tarjeta <span class="tag-required">*</span></label>
+          <input id="card-name" class="field" type="text" placeholder="Como aparece en la tarjeta"
+            autocomplete="cc-name" />
+          <p id="err-card-name" class="info-msg err hidden"></p>
+        </div>
+
+        <div class="mb-6">
+          <label class="lbl">Documento (DNI/CE) <span class="tag-required">*</span></label>
+          <input id="card-doc" class="field" type="text" placeholder="N° de documento" />
+          <p id="err-card-doc" class="info-msg err hidden"></p>
+        </div>
+
+        <div class="flex items-center justify-between p-3 rounded-xl mb-4" style="background:var(--bg-card2);">
+          <span class="text-sm" style="color:var(--text-muted);">Total a pagar</span>
+          <span id="modal-total" class="text-xl font-extrabold mono" style="color:var(--accent);"></span>
+        </div>
+
+        <p id="modal-error" class="info-msg err mb-3 hidden text-center font-semibold"></p>
+
+        <button id="btn-confirmar-tarjeta" class="btn-pagar" onclick="procesarPago()">
+          <span id="btn-confirmar-txt"><i class="fas fa-lock mr-2"></i>Confirmar pago</span>
+          <div id="btn-confirmar-spinner" class="spinner hidden"></div>
+        </button>
+      </div>
+
+      <!-- ── TAB: YAPE ─────────────────────────────────── -->
+      <div id="tab-yape" class="tab-content">
+        <div class="yape-panel">
+
+          <!-- Logo oficial -->
+          <div class="yape-header">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvAAvbqUFoCgtMpPmzqDUBETvkc5mYyLw1fw&s"
+              alt="Yape" class="yape-logo" style="width:250px; height:auto;"
+              onerror="this.style.display='none'; document.getElementById('yape-logo-fallback').style.display='block';" />
+            <div id="yape-logo-fallback"
+              style="display:none; font-size:34px; font-weight:800; color:#742384; font-family:'Outfit',sans-serif;">
+              yape</div>
+            <p class="yape-subtitle">Paga de forma rápida y segura</p>
+          </div>
+
+          <!-- Teléfono -->
+          <div class="mb-5">
+            <label class="yape-label">
+              Ingresa tu celular Yape <span class="tag-required">*</span>
+              <span title="Número registrado en tu app Yape"
+                style="cursor:help; margin-left:4px; color:#9CA3AF; font-size:13px;">&#9432;</span>
+            </label>
+            <div class="yape-phone-wrapper">
+              <span class="yape-country">+51</span>
+              <input id="yape-celular" class="yape-phone" type="tel" placeholder="000 000 000" maxlength="9"
+                inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
+            </div>
+            <p id="err-yape-celular" class="info-msg err hidden"></p>
+          </div>
+
+          <!-- OTP -->
+          <div class="mb-4">
+            <p class="yape-code-title">
+              Código de aprobación <span class="tag-required">*</span>
+            </p>
+            <div class="otp-container" id="otp-container">
+              <input class="otp-input" type="tel" inputmode="numeric" maxlength="1" data-index="0">
+              <input class="otp-input" type="tel" inputmode="numeric" maxlength="1" data-index="1">
+              <input class="otp-input" type="tel" inputmode="numeric" maxlength="1" data-index="2">
+              <input class="otp-input" type="tel" inputmode="numeric" maxlength="1" data-index="3">
+              <input class="otp-input" type="tel" inputmode="numeric" maxlength="1" data-index="4">
+              <input class="otp-input" type="tel" inputmode="numeric" maxlength="1" data-index="5">
+            </div>
+            <p id="err-yape-codigo" class="info-msg err hidden"></p>
+            <p class="yape-help">
+              <i class="fas fa-info-circle" style="color:#742384; margin-right:4px;"></i>
+              Encuéntralo en el menú de Yape.
+            </p>
+            <!-- Badge ambiente de pruebas -->
+            <div class="yape-test-code">
+              Ambiente de pruebas &mdash; cualquier código de 6 dígitos es válido
+            </div>
+          </div>
+
+          <!-- Total -->
+          <div class="yape-total">
+            <span>Total a pagar</span>
+            <span id="modal-total-yape"></span>
+          </div>
+
+          <p id="modal-error-yape" class="info-msg err hidden text-center font-semibold mb-3"></p>
+
+          <button id="btn-yapear" class="btn-yape" onclick="procesarPagoYape()">
+            <span id="btn-yapear-txt">Yapear &nbsp;·&nbsp; S/ <span id="yape-monto">0.00</span></span>
+            <div id="btn-yapear-spinner" class="spinner hidden" style="border-top-color: var(--yape-primary);"></div>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BOLETA TÉRMICA 80mm -->
+  <div id="boleta-wrapper">
+    <div class="no-print text-center mb-6">
+      <h2 class="text-2xl font-extrabold mb-2" style="color:var(--accent);">¡Pago exitoso!</h2>
+      <p style="color:var(--text-muted);">Tu reserva ha sido confirmada. Guarda o imprime tu boleta.</p>
+      <div class="flex justify-center gap-4 mt-4">
+        <button onclick="window.print()" class="btn-pagar" style="width:auto;padding:10px 24px;">
+          <i class="fas fa-print mr-2"></i>Imprimir boleta
+        </button>
+        <a href="destinos.html" class="btn-pagar"
+          style="width:auto;padding:10px 24px;background:var(--bg-card);border:1px solid var(--border);text-decoration:none;">
+          <i class="fas fa-compass mr-2"></i>Ver más destinos
+        </a>
+      </div>
+    </div>
+    <div class="boleta" id="boleta-content"></div>
+  </div>
+
+  <script>
+    const API = 'https://localhost:7047/api';
+    const VERIFICAPE_TOKEN = 'vp_live_aada01fa0e4c4fa290b3e042fc612bb8';
+    const VERIFICAPE_API = 'https://corsproxy.io/?https://api.verificape.com/v2/dni';
+    const YAPE_TEST_CODE = '123456';
+
+    /* ── ESTADO GLOBAL ──────────────────────────────────── */
+    let paquete = null;
+    let destino = null;
+    let numeroPax = 1;
+    let clienteCache = {};
+    let dniCache = {};
+    let dniClienteCache = {};
+    let reservaData = null;
+    let pagoData = null;
+
+    /* ══════════════════════════════════════════════════════
+       1. INICIALIZACIÓN
+    ══════════════════════════════════════════════════════ */
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const idPaquete = params.get('iD_Paquete') || params.get('id');
+      if (!idPaquete) { mostrarPkgError(); return; }
+      cargarPaquete(idPaquete);
+      initYapeOTP();
+    });
+
+    async function cargarPaquete(id) {
+      try {
+        const res = await fetch(`${API}/Paquete/${id}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        paquete = await res.json();
+
+        const idDestino = paquete.iD_Destino || paquete.ID_Destino;
+        if (idDestino) {
+          const resDest = await fetch(`${API}/Destino/${idDestino}`);
+          if (resDest.ok) destino = await resDest.json();
+        }
+
+        renderPaquete();
+        renderPasajeros();
+        actualizarResumen();
+        document.getElementById('pkg-loading').classList.add('hidden');
+        document.getElementById('checkout-main').classList.remove('hidden');
+        document.getElementById('checkout-main').style.display = 'grid';
+      } catch (e) {
+        console.error('Error cargando paquete:', e);
+        mostrarPkgError();
+      }
+    }
+
+    function mostrarPkgError() {
+      document.getElementById('pkg-loading').classList.add('hidden');
+      document.getElementById('pkg-error').classList.remove('hidden');
+    }
+
+    function renderPaquete() {
+      if (!paquete) return;
+      const nombre = paquete.nombre || '';
+      const precio = parseFloat(paquete.precio_Base || paquete.precio || 0);
+      const duracion = paquete.duracion || '';
+      const tipo = paquete.tipo || 'Tour';
+      const imagen = paquete.imagen || 'assets/img/viaje.jpeg';
+      const desc = paquete.descripcion || '';
+
+      document.getElementById('pkg-img').src = imagen;
+      document.getElementById('pkg-img').alt = nombre;
+      document.getElementById('pkg-nombre').textContent = nombre;
+      document.getElementById('pkg-desc').textContent = desc;
+      document.getElementById('pkg-tipo').textContent = tipo;
+      document.getElementById('pkg-duracion').innerHTML =
+        `<i class="fas fa-clock mr-1" style="color:var(--accent);"></i>${duracion}`;
+      document.getElementById('pkg-precio').textContent = `S/ ${precio.toFixed(2)}`;
+      document.getElementById('summary-pkg-nombre').textContent = nombre;
+      document.title = `Checkout – ${nombre}`;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       2. PASAJEROS
+    ══════════════════════════════════════════════════════ */
+    function changePasajeros(delta) {
+      const nuevo = Math.max(1, Math.min(20, numeroPax + delta));
+      if (nuevo === numeroPax) return;
+      numeroPax = nuevo;
+      document.getElementById('num-display').textContent = numeroPax;
+      renderPasajeros();
+      actualizarResumen();
+    }
+
+    function renderPasajeros() {
+      const container = document.getElementById('pasajeros-container');
+      const existing = container.querySelectorAll('.pasajero-card').length;
+      for (let i = existing; i < numeroPax; i++) container.appendChild(crearFormPasajero(i));
+      const cards = container.querySelectorAll('.pasajero-card');
+      for (let i = numeroPax; i < cards.length; i++) cards[i].remove();
+    }
+
+    function crearFormPasajero(idx) {
+      const isTitular = idx === 0;
+      const div = document.createElement('div');
+      div.className = 'pasajero-card';
+      div.dataset.pax = idx;
+      div.innerHTML = `
+        <div class="flex items-center justify-between mb-5">
+          <p class="section-title m-0">
+            <i class="fas fa-user mr-2"></i>
+            ${isTitular ? 'Pasajero titular (Pasajero 1)' : `Pasajero ${idx + 1}`}
+          </p>
+          ${isTitular ? `<span class="text-xs px-2 py-1 rounded-full font-semibold"
+            style="background:#065F46;color:#6EE7B7;">Titular</span>` : ''}
+        </div>
+        <div class="mb-4">
+          <label class="lbl">Documento (DNI/Pasaporte) <span class="tag-required">*</span></label>
+          <div style="position:relative;">
+            <input id="pax-${idx}-dni" class="field" type="text" placeholder="Ej: 12345678"
+                   onblur="verificarDNIReniec(${idx}, this.value)" />
+            <div id="pax-${idx}-dni-spinner" class="hidden"
+              style="position:absolute;right:12px;top:50%;transform:translateY(-50%);">
+              <div class="spinner" style="width:16px;height:16px;border-width:2px;"></div>
+            </div>
+          </div>
+          <p id="pax-${idx}-dni-msg" class="info-msg"></p>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="lbl">Nombre <span class="tag-required">*</span></label>
+            <input id="pax-${idx}-nombre"   class="field" type="text" placeholder="Nombre" /></div>
+          <div><label class="lbl">Apellido <span class="tag-required">*</span></label>
+            <input id="pax-${idx}-apellido" class="field" type="text" placeholder="Apellido" /></div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <div><label class="lbl">Nacionalidad <span class="tag-required">*</span></label>
+            <input id="pax-${idx}-nacionalidad" class="field" type="text" placeholder="Ej: Peruana" /></div>
+          <div><label class="lbl">Fecha de nacimiento <span class="tag-required">*</span></label>
+            <input id="pax-${idx}-fechanac" class="field" type="date"
+              onchange="validarEdadPasajero(${idx}, this)" />
+            <p id="pax-${idx}-edad-msg" class="edad-error-msg"></p>
+          </div>
+        </div>
+        ${isTitular ? `
+          <div class="mt-4">
+            <label class="lbl">Correo electrónico <span class="tag-required">*</span></label>
+            <input id="pax-0-correo" class="field" type="email" placeholder="correo@ejemplo.com" />
+            <p id="pax-0-correo-msg" class="info-msg"></p>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mt-4">
+            <div><label class="lbl">Teléfono <span class="tag-required">*</span></label>
+              <input id="pax-0-telefono" class="field" type="tel" placeholder="987 654 321" /></div>
+            <div style="display:none;"><input id="pax-0-invisible" class="field" type="text" /></div>
+          </div>
+          <div class="mt-4">
+            <label class="lbl">Dirección <span class="tag-required">*</span></label>
+            <input id="pax-0-direccion" class="field" type="text" placeholder="Calle, número, ciudad" />
+          </div>
+        ` : ''}
+      `;
+      return div;
+    }
+
+    function calcularEdad(fechaISO) {
+      const nacimiento = new Date(fechaISO);
+      const hoy = new Date();
+      let edad = hoy.getFullYear() - nacimiento.getFullYear();
+      const m = hoy.getMonth() - nacimiento.getMonth();
+      if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) edad--;
+      return edad;
+    }
+
+    function validarEdadPasajero(idx, input) {
+      const isTitular = idx === 0;
+      const msgEl = document.getElementById(`pax-${idx}-edad-msg`);
+      if (!input.value) { msgEl.style.display = 'none'; input.classList.remove('error'); return true; }
+      const edad = calcularEdad(input.value);
+      const minimo = isTitular ? 18 : 3;
+      const texto = isTitular
+        ? 'El titular debe ser mayor de 18 años.'
+        : 'Los acompañantes deben tener al menos 3 años.';
+      if (edad < minimo) {
+        input.classList.add('error');
+        msgEl.textContent = texto;
+        msgEl.style.display = 'block';
+        return false;
+      } else {
+        input.classList.remove('error');
+        msgEl.style.display = 'none';
+        return true;
+      }
+    }
+
+    async function verificarDNIReniec(idx, dni) {
+      if (!dni || dni.length < 8) return;
+      const msgEl = document.getElementById(`pax-${idx}-dni-msg`);
+      const spinnerEl = document.getElementById(`pax-${idx}-dni-spinner`);
+      if (spinnerEl) spinnerEl.classList.remove('hidden');
+      msgEl.className = 'info-msg warn';
+      msgEl.textContent = 'Verificando datos…';
+      if (dni in dniCache) {
+        if (spinnerEl) spinnerEl.classList.add('hidden');
+        if (dniCache[dni].success) { rellenarPasajeroReniec(idx, dniCache[dni].data); mostrarOkDNI(msgEl); }
+        else { msgEl.className = 'info-msg warn'; msgEl.textContent = dniCache[dni].error || 'No se encontraron datos. Completa manualmente.'; }
+        if (idx === 0) await buscarClientePorDNI(0, dni, msgEl);
+        return;
+      }
+      try {
+        const response = await fetch(`${VERIFICAPE_API}/${dni}`,
+          { headers: { 'Authorization': `Bearer ${VERIFICAPE_TOKEN}` } });
+        if (spinnerEl) spinnerEl.classList.add('hidden');
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          dniCache[dni] = { success: false, error: error.message || 'No se encontraron datos.' };
+          msgEl.className = 'info-msg warn';
+          msgEl.textContent = dniCache[dni].error;
+          if (idx === 0) await buscarClientePorDNI(0, dni, msgEl);
+          return;
+        }
+        const responseData = await response.json();
+        if (!responseData.success || !responseData.data) throw new Error('Respuesta inválida');
+        const persona = responseData.data;
+        dniCache[dni] = { success: true, data: persona };
+        rellenarPasajeroReniec(idx, persona);
+        mostrarOkDNI(msgEl);
+        if (idx === 0) await buscarClientePorDNI(0, dni, msgEl);
+      } catch (e) {
+        console.error(e);
+        if (spinnerEl) spinnerEl.classList.add('hidden');
+        dniCache[dni] = { success: false, error: 'Error de conexión.' };
+        msgEl.className = 'info-msg err';
+        msgEl.textContent = 'Error de conexión.';
+        if (idx === 0) await buscarClientePorDNI(0, dni, msgEl);
+      }
+    }
+
+    function mostrarOkDNI(msgEl) {
+      msgEl.className = 'info-msg ok';
+      msgEl.innerHTML = `<span style="display:flex;align-items:center;gap:6px;">
+        <i class="fas fa-check-circle"></i>Datos verificados con RENIEC
+        <span class="verificape-badge"><i class="fas fa-shield-check"></i>VerificaPE</span>
+      </span>`;
+    }
+
+    function rellenarPasajeroReniec(idx, persona) {
+      const setVal = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+      const nombre = persona.names || '';
+      const apPat = persona.paternalSurname || '';
+      const apMat = persona.maternalSurname || '';
+      const apellido = `${apPat} ${apMat}`.trim();
+      const fechaRaw = persona.birthDate || '';
+      let fechaFormateada = '';
+      if (fechaRaw.includes('/')) {
+        const [d, m, y] = fechaRaw.split('/');
+        fechaFormateada = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+      }
+      setVal(`pax-${idx}-nombre`, nombre);
+      setVal(`pax-${idx}-apellido`, apellido);
+      setVal(`pax-${idx}-nacionalidad`, 'Peruana');
+      if (fechaFormateada) {
+        setVal(`pax-${idx}-fechanac`, fechaFormateada);
+        const fechaEl = document.getElementById(`pax-${idx}-fechanac`);
+        if (fechaEl) validarEdadPasajero(idx, fechaEl);
+      }
+    }
+
+    async function buscarClientePorDNI(idx, dni, msgEl) {
+      if (!msgEl) msgEl = document.getElementById(`pax-${idx}-dni-msg`);
+      if (dni in dniClienteCache) {
+        if (dniClienteCache[dni]) {
+          const cli = dniClienteCache[dni].data;
+          const correo = cli.correo || cli.Correo || '';
+          rellenarTitularDesdeCliente(cli);
+          if (correo) clienteCache[correo] = { id: dniClienteCache[dni].id, data: cli };
+          mostrarMsgClienteEncontradoDNI(msgEl, cli);
+        }
+        return;
+      }
+      try {
+        const res = await fetch(`${API}/Cliente`);
+        if (!res.ok) { dniClienteCache[dni] = null; return; }
+        let lista = []; try { lista = await res.json(); } catch (_) { lista = []; }
+        const cliente = lista.find(c =>
+          (c.pasaporte || c.Pasaporte || '').trim().toLowerCase() === dni.trim().toLowerCase()
+        );
+        if (cliente?.iD_Cliente) {
+          dniClienteCache[dni] = { id: cliente.iD_Cliente, data: cliente };
+          const correo = cliente.correo || cliente.Correo || '';
+          if (correo) clienteCache[correo] = { id: cliente.iD_Cliente, data: cliente };
+          rellenarTitularDesdeCliente(cliente);
+          mostrarMsgClienteEncontradoDNI(msgEl, cliente);
+        } else { dniClienteCache[dni] = null; }
+      } catch (e) { console.warn(e); dniClienteCache[dni] = null; }
+    }
+
+    function mostrarMsgClienteEncontradoDNI(msgEl, cli) {
+      const nombre = `${cli.nombre || cli.Nombre || ''} ${cli.apellido || cli.Apellido || ''}`.trim();
+      msgEl.className = 'info-msg ok';
+      msgEl.innerHTML = `<span style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <i class="fas fa-user-check"></i>Cliente registrado: <strong>${nombre}</strong>
+        <span class="autocomplete-badge"><i class="fas fa-magic"></i>Datos autocompletos</span>
+      </span>`;
+    }
+
+    function rellenarTitularDesdeCliente(cli) {
+      const fill = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+      fill('pax-0-nombre', cli.nombre || cli.Nombre || '');
+      fill('pax-0-apellido', cli.apellido || cli.Apellido || '');
+      fill('pax-0-correo', cli.correo || cli.Correo || '');
+      fill('pax-0-telefono', cli.telefono || cli.Telefono || '');
+      fill('pax-0-direccion', cli.direccion || cli.Direccion || '');
+      fill('pax-0-nacionalidad', cli.nacionalidad || cli.Nacionalidad || '');
+      fill('pax-0-dni', cli.pasaporte || cli.dni || '');
+      if (cli.fecha_Nacimiento || cli.fechaNacimiento) {
+        const fechaRaw = cli.fecha_Nacimiento || cli.fechaNacimiento || '';
+        if (fechaRaw.includes('/')) {
+          const [d, m, y] = fechaRaw.split('/');
+          const fechaISO = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+          const fechaEl = document.getElementById('pax-0-fechanac');
+          if (fechaEl) { fechaEl.value = fechaISO; validarEdadPasajero(0, fechaEl); }
+        }
+      }
+      const correoMsgEl = document.getElementById('pax-0-correo-msg');
+      if (correoMsgEl && (cli.correo || cli.Correo))
+        correoMsgEl.innerHTML = `<i class="fas fa-magic mr-1"></i>Correo autocompleto desde tu perfil`;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       3. RESUMEN Y VALIDACIONES
+    ══════════════════════════════════════════════════════ */
+    function actualizarResumen() {
+      if (!paquete) return;
+      const precio = parseFloat(paquete.precio_Base || paquete.precio || 0);
+      const total = precio * numeroPax;
+      const igv = total - (total / 1.18);
+      const subtotal = total - igv;
+      document.getElementById('sum-unit').textContent = `S/ ${precio.toFixed(2)}`;
+      document.getElementById('sum-qty').textContent = numeroPax;
+      document.getElementById('sum-subtotal').textContent = `S/ ${subtotal.toFixed(2)}`;
+      document.getElementById('sum-igv').textContent = `S/ ${igv.toFixed(2)}`;
+      document.getElementById('sum-total').textContent = `S/ ${total.toFixed(2)}`;
+      document.getElementById('modal-total').textContent = `S/ ${total.toFixed(2)}`;
+      document.getElementById('modal-total-yape').textContent = `S/ ${total.toFixed(2)}`;
+      const montoSpan = document.getElementById('yape-monto');
+      if (montoSpan) montoSpan.innerText = total.toFixed(2);
+    }
+
+    function getTotal() {
+      return parseFloat(paquete?.precio_Base || 0) * numeroPax;
+    }
+
+    function validarPasajeros() {
+      for (let i = 0; i < numeroPax; i++) {
+        const isTitular = i === 0;
+        const campos = [
+          { id: `pax-${i}-dni`, label: 'DNI/Pasaporte' },
+          { id: `pax-${i}-nombre`, label: 'Nombre' },
+          { id: `pax-${i}-apellido`, label: 'Apellido' },
+          { id: `pax-${i}-nacionalidad`, label: 'Nacionalidad' },
+          { id: `pax-${i}-fechanac`, label: 'Fecha de nacimiento' },
+        ];
+        if (isTitular) campos.push(
+          { id: 'pax-0-correo', label: 'Correo' },
+          { id: 'pax-0-telefono', label: 'Teléfono' },
+          { id: 'pax-0-direccion', label: 'Dirección' }
+        );
+        for (const campo of campos) {
+          const el = document.getElementById(campo.id);
+          if (!el) continue;
+          if (!el.value.trim()) {
+            el.classList.add('error');
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.focus();
+            showToast(`Pasajero ${i + 1}: "${campo.label}" es obligatorio.`, 'err');
+            return false;
+          } else { el.classList.remove('error'); }
+        }
+        const fechaEl = document.getElementById(`pax-${i}-fechanac`);
+        if (fechaEl && fechaEl.value) {
+          const edad = calcularEdad(fechaEl.value);
+          const minimo = isTitular ? 18 : 3;
+          if (edad < minimo) {
+            fechaEl.classList.add('error');
+            showToast(isTitular
+              ? 'El titular debe ser mayor de 18 años.'
+              : `Pasajero ${i + 1} debe tener al menos 3 años.`, 'err');
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    function getDatosPasajero(idx) {
+      const get = id => document.getElementById(id)?.value?.trim() || '';
+      const isTitular = idx === 0;
+      return {
+        correo: isTitular ? get('pax-0-correo') : '',
+        nombre: get(`pax-${idx}-nombre`),
+        apellido: get(`pax-${idx}-apellido`),
+        dni: get(`pax-${idx}-dni`),
+        nacionalidad: get(`pax-${idx}-nacionalidad`),
+        fechaNac: get(`pax-${idx}-fechanac`),
+        telefono: isTitular ? get('pax-0-telefono') : '',
+        direccion: isTitular ? get('pax-0-direccion') : '',
+      };
+    }
+
+    /* ══════════════════════════════════════════════════════
+       4. MODAL Y TABS
+    ══════════════════════════════════════════════════════ */
+    function selectPaymentMethod(method) {
+      const tabTarjeta = document.getElementById('tab-tarjeta');
+      const tabYape = document.getElementById('tab-yape');
+      const btnTarjeta = document.getElementById('tab-tarjeta-btn');
+      const btnYape = document.getElementById('tab-yape-btn');
+
+      if (method === 'tarjeta') {
+        tabTarjeta.classList.add('active');
+        tabYape.classList.remove('active');
+        btnTarjeta.classList.add('active');
+        btnYape.classList.remove('active');
+      } else {
+        tabYape.classList.add('active');
+        tabTarjeta.classList.remove('active');
+        btnYape.classList.add('active');
+        btnTarjeta.classList.remove('active');
+        limpiarOTP();
+      }
+    }
+
+    function abrirModalPago() {
+      if (!validarPasajeros()) return;
+      actualizarResumen();
+      document.getElementById('err-yape-celular')?.classList.add('hidden');
+      document.getElementById('err-yape-codigo')?.classList.add('hidden');
+      document.getElementById('modal-error-yape')?.classList.add('hidden');
+      selectPaymentMethod('tarjeta');
+      document.getElementById('modal-pago').classList.add('open');
+    }
+
+    function cerrarModalPago() {
+      document.getElementById('modal-pago').classList.remove('open');
+    }
+
+    /* ══════════════════════════════════════════════════════
+       5. FUNCIONES OTP YAPE
+    ══════════════════════════════════════════════════════ */
+
+    /**
+     * Inicializa el comportamiento de las casillas OTP:
+     * avance automático, retroceso inteligente, pegado de 6 dígitos.
+     */
+    function initYapeOTP() {
+      const inputs = document.querySelectorAll('#otp-container .otp-input');
+
+      inputs.forEach((input, index) => {
+        /* Solo números, avance automático */
+        input.addEventListener('input', (e) => {
+          const val = e.target.value.replace(/\D/g, '');
+          e.target.value = val.slice(0, 1);
+          if (val && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          }
+        });
+
+        /* Retroceso inteligente */
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace') {
+            if (!e.target.value && index > 0) {
+              inputs[index - 1].focus();
+              inputs[index - 1].value = '';
+            }
+          }
+          if (e.key === 'ArrowLeft' && index > 0) inputs[index - 1].focus();
+          if (e.key === 'ArrowRight' && index < inputs.length - 1) inputs[index + 1].focus();
+        });
+
+        /* Pegado de 6 dígitos */
+        input.addEventListener('paste', (e) => {
+          e.preventDefault();
+          const paste = (e.clipboardData || window.clipboardData)
+            .getData('text').replace(/\D/g, '').slice(0, 6);
+          inputs.forEach((inp, i) => { inp.value = paste[i] || ''; });
+          const focusIdx = Math.min(paste.length, inputs.length - 1);
+          inputs[focusIdx].focus();
+        });
+
+        /* Seleccionar contenido al enfocar */
+        input.addEventListener('focus', (e) => { e.target.select(); });
+      });
+    }
+
+    /**
+     * Devuelve el código OTP completo (string de 6 caracteres).
+     */
+    function obtenerCodigoOTP() {
+      const inputs = document.querySelectorAll('#otp-container .otp-input');
+      return Array.from(inputs).map(i => i.value).join('');
+    }
+
+    /**
+     * Vacía todas las casillas OTP y coloca el foco en la primera.
+     */
+    function limpiarOTP() {
+      const inputs = document.querySelectorAll('#otp-container .otp-input');
+      inputs.forEach(i => { i.value = ''; });
+      if (inputs.length > 0) inputs[0].focus();
+    }
+
+    /* ══════════════════════════════════════════════════════
+       6. VALIDACIONES DE PAGO
+    ══════════════════════════════════════════════════════ */
+    function validarYape() {
+      let ok = true;
+      const celular = document.getElementById('yape-celular')?.value.trim();
+      const codigoIngresado = obtenerCodigoOTP();
+      const errCel = document.getElementById('err-yape-celular');
+      const errCod = document.getElementById('err-yape-codigo');
+
+      if (!celular || celular.length < 9) {
+        if (errCel) {
+          errCel.classList.remove('hidden');
+          errCel.textContent = 'Ingresa un número de celular válido (9 dígitos).';
+        }
+        ok = false;
+      } else {
+        if (errCel) errCel.classList.add('hidden');
+      }
+
+      if (codigoIngresado.length !== 6) {
+        if (errCod) {
+          errCod.classList.remove('hidden');
+          errCod.textContent = 'Ingresa los 6 dígitos del código de aprobación.';
+        }
+        ok = false;
+      } else {
+        // Ambiente de pruebas: cualquier código de 6 dígitos es válido
+        if (errCod) errCod.classList.add('hidden');
+      }
+
+      return ok;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       7. PROCESAR PAGO CON TARJETA
+    ══════════════════════════════════════════════════════ */
+    function formatCardNum(input) {
+      let val = input.value.replace(/\D/g, '').slice(0, 16);
+      input.value = val.replace(/(.{4})/g, '$1 ').trim();
+      detectBrand(val);
+    }
+    function formatExpiry(input) {
+      let val = input.value.replace(/\D/g, '').slice(0, 4);
+      if (val.length >= 3) val = val.slice(0, 2) + '/' + val.slice(2);
+      input.value = val;
+    }
+    function detectBrand(digits) {
+      const iconVisa = document.getElementById('icon-visa');
+      const iconMc = document.getElementById('icon-mc');
+      const iconAmex = document.getElementById('icon-amex');
+      const label = document.getElementById('brand-label');
+      [iconVisa, iconMc, iconAmex].forEach(i => i.classList.remove('active'));
+      if (!digits) { label.textContent = 'Tarjeta detectada automáticamente'; label.style.color = 'var(--text-muted)'; return; }
+      const f = digits[0];
+      if (f === '4') { iconVisa.classList.add('active'); label.textContent = 'Visa'; label.style.color = '#1A1F71'; }
+      else if (f === '5') { iconMc.classList.add('active'); label.textContent = 'Mastercard'; label.style.color = '#EB001B'; }
+      else if (f === '3') { iconAmex.classList.add('active'); label.textContent = 'American Express'; label.style.color = '#007BC1'; }
+      else { label.textContent = 'Marca no reconocida'; label.style.color = 'var(--text-dim)'; }
+    }
+    function luhn(num) {
+      let sum = 0, alt = false;
+      for (let i = num.length - 1; i >= 0; i--) {
+        let n = parseInt(num[i]);
+        if (alt) { n *= 2; if (n > 9) n -= 9; }
+        sum += n; alt = !alt;
+      }
+      return sum % 10 === 0;
+    }
+    function validarTarjeta() {
+      let ok = true;
+      const showErr = (errId, inputId, msg) => {
+        const errEl = document.getElementById(errId);
+        const inpEl = document.getElementById(inputId);
+        if (errEl) { errEl.classList.remove('hidden'); errEl.textContent = msg; }
+        if (inpEl) inpEl.style.borderColor = 'var(--danger)';
+        ok = false;
+      };
+      const hideErr = (errId, inputId) => {
+        const errEl = document.getElementById(errId);
+        const inpEl = document.getElementById(inputId);
+        if (errEl) errEl.classList.add('hidden');
+        if (inpEl) inpEl.style.borderColor = '';
+      };
+      hideErr('err-card-num', 'card-num');
+      const rawNum = document.getElementById('card-num').value.replace(/\s/g, '');
+      if (!rawNum) showErr('err-card-num', 'card-num', 'Ingresa el número de tarjeta.');
+      else if (rawNum.length < 13 || rawNum.length > 16) showErr('err-card-num', 'card-num', `Número incompleto (${rawNum.length}/16 dígitos).`);
+      else if (!luhn(rawNum)) showErr('err-card-num', 'card-num', 'Número de tarjeta inválido.');
+
+      hideErr('err-card-exp', 'card-exp');
+      const exp = document.getElementById('card-exp').value;
+      if (!exp) showErr('err-card-exp', 'card-exp', 'Ingresa la fecha de expiración.');
+      else if (!/^\d{2}\/\d{2}$/.test(exp)) showErr('err-card-exp', 'card-exp', 'Formato inválido. Usa MM/AA.');
+      else {
+        const [mm, yy] = exp.split('/').map(Number);
+        const expDate = new Date(2000 + yy, mm - 1, 1);
+        const thisMo = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+        if (mm < 1 || mm > 12) showErr('err-card-exp', 'card-exp', 'Mes inválido (01–12).');
+        else if (expDate < thisMo) showErr('err-card-exp', 'card-exp', `Tarjeta vencida (${String(mm).padStart(2, '0')}/${yy}).`);
+      }
+
+      hideErr('err-card-cvv', 'card-cvv');
+      const cvv = document.getElementById('card-cvv').value;
+      if (!cvv) showErr('err-card-cvv', 'card-cvv', 'Ingresa el CVV.');
+      else if (cvv.length < 3) showErr('err-card-cvv', 'card-cvv', 'CVV incompleto (mínimo 3 dígitos).');
+
+      hideErr('err-card-name', 'card-name');
+      if (!document.getElementById('card-name').value.trim())
+        showErr('err-card-name', 'card-name', 'Ingresa el nombre como aparece en la tarjeta.');
+
+      hideErr('err-card-doc', 'card-doc');
+      if (!document.getElementById('card-doc').value.trim())
+        showErr('err-card-doc', 'card-doc', 'Ingresa tu número de documento.');
+
+      return ok;
+    }
+
+    async function procesarPago() {
+      if (!validarTarjeta()) return;
+      setBtnLoading(true);
+      document.getElementById('modal-error').classList.add('hidden');
+
+      try {
+        const titular = getDatosPasajero(0);
+        const correo = titular.correo;
+        const precio = parseFloat(paquete.precio_Base || paquete.precio || 0);
+        const total = precio * numeroPax;
+        const idPaquete = parseInt(
+          new URLSearchParams(window.location.search).get('iD_Paquete') ||
+          new URLSearchParams(window.location.search).get('id')
+        );
+
+        let idCliente = null;
+        const dniTitular = titular.dni;
+        if (dniClienteCache[dniTitular]?.id) {
+          idCliente = dniClienteCache[dniTitular].id;
+        } else if (clienteCache[correo]?.id) {
+          idCliente = clienteCache[correo].id;
+        } else {
+          let cli = null;
+          try {
+            const resLista = await fetch(`${API}/Cliente`);
+            const lista = await resLista.json();
+            cli = lista.find(c => (c.correo || c.Correo || '').toLowerCase() === correo.toLowerCase());
+            if (cli) clienteCache[correo] = { id: cli.iD_Cliente, data: cli };
+          } catch (e) { }
+          if (cli?.iD_Cliente) {
+            idCliente = cli.iD_Cliente;
+          } else {
+            const nuevoCliente = {
+              iD_Usuario: 1,
+              frecuencia_Viajero: 'Normal',
+              correo: correo,
+              nombre: titular.nombre,
+              apellido: titular.apellido,
+              telefono: titular.telefono,
+              direccion: titular.direccion,
+              nacionalidad: titular.nacionalidad,
+              pasaporte: titular.dni,
+              fecha_Nacimiento: formatDateForApi(titular.fechaNac),
+            };
+            const resPost = await fetch(`${API}/Cliente`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(nuevoCliente),
+            });
+            if (!resPost.ok) throw new Error(`Error al crear cliente: ${await resPost.text()}`);
+            const cliCreado = await resPost.json();
+            idCliente = cliCreado.iD_Cliente;
+            clienteCache[correo] = { id: idCliente, data: cliCreado };
+            dniClienteCache[dniTitular] = { id: idCliente, data: cliCreado };
+          }
+        }
+        if (!idCliente) throw new Error('No se pudo obtener el ID del cliente.');
+
+        const acompanantes = [];
+        for (let i = 1; i < numeroPax; i++) {
+          const p = getDatosPasajero(i);
+          acompanantes.push({
+            ID_Cliente: 0, Nombre: p.nombre, Apellido: p.apellido,
+            Telefono: '', Correo: '', Pasaporte: p.dni, Nacionalidad: p.nacionalidad
+          });
+        }
+
+        const fechaFormateada = formatearFechaReserva(new Date());
+        const numeroTransaccion = `WEB-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+        const payload = {
+          ID_Cliente: idCliente,
+          ID_Paquete: idPaquete,
+          Fecha_Reserva: fechaFormateada,
+          Numero_Personas: numeroPax,
+          Precio_Total: total,
+          Observaciones: '',
+          Metodo_Pago: 'Tarjeta (Prueba)',
+          Monto: total,
+          Fecha_Pago: fechaFormateada,
+          Numero_Transaccion: numeroTransaccion,
+          Moneda: destino?.moneda || 'PEN',
+          DestinoNombre: destino?.nombre || '',
+          Cliente: {
+            ID_Cliente: idCliente,
+            Nombre: titular.nombre,
+            Apellido: titular.apellido,
+            Telefono: titular.telefono,
+            Correo: titular.correo,
+            Pasaporte: titular.dni,
+            Nacionalidad: titular.nacionalidad,
+          },
+          Acompanantes: acompanantes,
+          Paquete: {
+            ID_Paquete: paquete.iD_Paquete,
+            Nombre: paquete.nombre,
+            Descripcion: paquete.descripcion || '',
+            Fecha_Inicio: paquete.fecha_Inicio || '',
+            Fecha_Fin: paquete.fecha_Fin || '',
+            Precio_Base: paquete.precio_Base,
+            ID_Destino: paquete.iD_Destino,
+            Inclusiones: paquete.inclusiones || '',
+            Exclusiones: paquete.exclusiones || '',
+          },
+        };
+
+        const resConfirm = await fetch(`${API}/Reserva/confirmar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!resConfirm.ok) {
+          const errorData = await resConfirm.json().catch(() => ({}));
+          throw new Error(errorData.mensaje || `Error ${resConfirm.status} al confirmar reserva`);
+        }
+
+        const response = await resConfirm.json();
+        if (!response.success) throw new Error(response.mensaje || 'Error desconocido');
+
+        cerrarModalPago();
+        const clienteParaBoleta = { ...titular, ...payload.Cliente };
+        mostrarBoleta(response.id_Reserva, payload.Numero_Transaccion, total,
+          titular, clienteParaBoleta, payload.Metodo_Pago);
+
+        if (response.correoEnviado) showToast('✅ El comprobante ha sido enviado a tu correo electrónico.', 'ok');
+        else showToast('⚠️ Reserva creada, pero no se pudo enviar el correo.', 'warn');
+
+      } catch (e) {
+        console.error('Error en procesarPago:', e);
+        const errEl = document.getElementById('modal-error');
+        errEl.textContent = e.message || 'Error inesperado al procesar el pago.';
+        errEl.classList.remove('hidden');
+      } finally {
+        setBtnLoading(false);
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════
+       8. PROCESAR PAGO CON YAPE (con spinner centrado)
+    ══════════════════════════════════════════════════════ */
+    async function procesarPagoYape() {
+      if (!validarYape()) return;
+
+      const btnYape = document.getElementById('btn-yapear');
+      const txtSpan = document.getElementById('btn-yapear-txt');
+      const spinner = document.getElementById('btn-yapear-spinner');
+
+      btnYape.disabled = true;
+      txtSpan.classList.add('hidden');
+      spinner.classList.remove('hidden');
+      document.getElementById('modal-error-yape').classList.add('hidden');
+
+      try {
+        const titular = getDatosPasajero(0);
+        const correo = titular.correo;
+        const precio = parseFloat(paquete.precio_Base || paquete.precio || 0);
+        const total = precio * numeroPax;
+        const idPaquete = parseInt(
+          new URLSearchParams(window.location.search).get('iD_Paquete') ||
+          new URLSearchParams(window.location.search).get('id')
+        );
+
+        let idCliente = null;
+        const dniTitular = titular.dni;
+        if (dniClienteCache[dniTitular]?.id) {
+          idCliente = dniClienteCache[dniTitular].id;
+        } else if (clienteCache[correo]?.id) {
+          idCliente = clienteCache[correo].id;
+        } else {
+          let cli = null;
+          try {
+            const resLista = await fetch(`${API}/Cliente`);
+            const lista = await resLista.json();
+            cli = lista.find(c => (c.correo || c.Correo || '').toLowerCase() === correo.toLowerCase());
+            if (cli) clienteCache[correo] = { id: cli.iD_Cliente, data: cli };
+          } catch (e) { }
+          if (cli?.iD_Cliente) {
+            idCliente = cli.iD_Cliente;
+          } else {
+            const nuevoCliente = {
+              iD_Usuario: 1,
+              frecuencia_Viajero: 'Normal',
+              correo: correo,
+              nombre: titular.nombre,
+              apellido: titular.apellido,
+              telefono: titular.telefono,
+              direccion: titular.direccion,
+              nacionalidad: titular.nacionalidad,
+              pasaporte: titular.dni,
+              fecha_Nacimiento: formatDateForApi(titular.fechaNac),
+            };
+            const resPost = await fetch(`${API}/Cliente`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(nuevoCliente),
+            });
+            if (!resPost.ok) throw new Error(`Error al crear cliente: ${await resPost.text()}`);
+            const cliCreado = await resPost.json();
+            idCliente = cliCreado.iD_Cliente;
+            clienteCache[correo] = { id: idCliente, data: cliCreado };
+            dniClienteCache[dniTitular] = { id: idCliente, data: cliCreado };
+          }
+        }
+        if (!idCliente) throw new Error('No se pudo obtener el ID del cliente.');
+
+        const acompanantes = [];
+        for (let i = 1; i < numeroPax; i++) {
+          const p = getDatosPasajero(i);
+          acompanantes.push({
+            ID_Cliente: 0, Nombre: p.nombre, Apellido: p.apellido,
+            Telefono: '', Correo: '', Pasaporte: p.dni, Nacionalidad: p.nacionalidad
+          });
+        }
+
+        const fechaFormateada = formatearFechaReserva(new Date());
+        const numeroTransaccion = `YAPE-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+        const payload = {
+          ID_Cliente: idCliente,
+          ID_Paquete: idPaquete,
+          Fecha_Reserva: fechaFormateada,
+          Numero_Personas: numeroPax,
+          Precio_Total: total,
+          Observaciones: '',
+          Metodo_Pago: 'Yape',
+          Monto: total,
+          Fecha_Pago: fechaFormateada,
+          Numero_Transaccion: numeroTransaccion,
+          Moneda: destino?.moneda || 'PEN',
+          DestinoNombre: destino?.nombre || '',
+          Cliente: {
+            ID_Cliente: idCliente,
+            Nombre: titular.nombre,
+            Apellido: titular.apellido,
+            Telefono: titular.telefono,
+            Correo: titular.correo,
+            Pasaporte: titular.dni,
+            Nacionalidad: titular.nacionalidad,
+          },
+          Acompanantes: acompanantes,
+          Paquete: {
+            ID_Paquete: paquete.iD_Paquete,
+            Nombre: paquete.nombre,
+            Descripcion: paquete.descripcion || '',
+            Fecha_Inicio: paquete.fecha_Inicio || '',
+            Fecha_Fin: paquete.fecha_Fin || '',
+            Precio_Base: paquete.precio_Base,
+            ID_Destino: paquete.iD_Destino,
+            Inclusiones: paquete.inclusiones || '',
+            Exclusiones: paquete.exclusiones || '',
+          },
+        };
+
+        const resConfirm = await fetch(`${API}/Reserva/confirmar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!resConfirm.ok) {
+          const errorData = await resConfirm.json().catch(() => ({}));
+          throw new Error(errorData.mensaje || `Error ${resConfirm.status} al confirmar reserva`);
+        }
+
+        const response = await resConfirm.json();
+        if (!response.success) throw new Error(response.mensaje || 'Error desconocido');
+
+        cerrarModalPago();
+        const clienteParaBoleta = { ...titular, ...payload.Cliente };
+        mostrarBoleta(response.id_Reserva, payload.Numero_Transaccion, total,
+          titular, clienteParaBoleta, payload.Metodo_Pago);
+
+        if (response.correoEnviado) showToast('✅ Pago con Yape exitoso. Comprobante enviado a tu correo.', 'ok');
+        else showToast('⚠️ Reserva creada con Yape, pero no se pudo enviar el correo.', 'warn');
+
+      } catch (e) {
+        console.error('Error en procesarPagoYape:', e);
+        const errEl = document.getElementById('modal-error-yape');
+        errEl.textContent = e.message || 'Error inesperado al procesar el pago con Yape.';
+        errEl.classList.remove('hidden');
+      } finally {
+        btnYape.disabled = false;
+        txtSpan.classList.remove('hidden');
+        spinner.classList.add('hidden');
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════
+       9. UTILIDADES
+    ══════════════════════════════════════════════════════ */
+    function formatDateForApi(isoDate) {
+      if (!isoDate) return '';
+      const [y, m, d] = isoDate.split('-');
+      return `${d}/${m}/${y}`;
+    }
+
+    function formatearFechaReserva(fecha) {
+      const dia = String(fecha.getDate()).padStart(2, '0');
+      const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+      const anio = fecha.getFullYear();
+      let h = fecha.getHours();
+      const min = String(fecha.getMinutes()).padStart(2, '0');
+      const ampm = h >= 12 ? 'pm' : 'am';
+      h = h % 12 || 12;
+      return `${dia}/${mes}/${anio} ${String(h).padStart(2, '0')}:${min} ${ampm}`;
+    }
+
+    function setBtnLoading(loading) {
+      const btn = document.getElementById('btn-confirmar-tarjeta');
+      const txt = document.getElementById('btn-confirmar-txt');
+      const spn = document.getElementById('btn-confirmar-spinner');
+      btn.disabled = loading;
+      txt.classList.toggle('hidden', loading);
+      spn.classList.toggle('hidden', !loading);
+    }
+
+    /* ══════════════════════════════════════════════════════
+       10. BOLETA TÉRMICA 80mm
+    ══════════════════════════════════════════════════════ */
+    function mostrarBoleta(idReserva, numTransaccion, total, titular, clienteData, metodoPago) {
+      document.getElementById('checkout-wrapper').style.display = 'none';
+      const nombre = paquete.nombre || '';
+      const precio = parseFloat(paquete.precio_Base || paquete.precio || 0);
+      const ahora = new Date();
+      const fechaStr = ahora.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const horaStr = ahora.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: true });
+      const igv = total - (total / 1.18);
+      const subtotal = total - igv;
+
+      let paxRows = '';
+      for (let i = 0; i < numeroPax; i++) {
+        const p = getDatosPasajero(i);
+        paxRows += `<div class="b-row"><span>${i + 1}. ${p.nombre} ${p.apellido}</span><span>${p.dni}</span></div>`;
+      }
+
+      const numBoleta = `B001-${String(numTransaccion).slice(-7)}`;
+
+      document.getElementById('boleta-content').innerHTML = `
+        <div class="b-center b-title">IGUAZÚ TOURS EXPRESS</div>
+        <div class="b-center" style="font-size:10px;">Huancayo, Perú</div>
+        <div class="b-center" style="font-size:10px;">Telf: 930 164 767</div>
+        <hr>
+        <div class="b-center b-bold" style="font-size:11px;">BOLETA DE VENTA ELECTRÓNICA</div>
+        <div class="b-center" style="font-size:10px;">${numBoleta}</div>
+        <div class="b-center" style="font-size:10px;">${fechaStr} ${horaStr}</div>
+        <hr>
+        <div class="b-bold" style="font-size:10px;">CLIENTE TITULAR:</div>
+        <div class="b-row">
+          <span>Nombre:</span>
+          <span>${(clienteData.nombre || titular.nombre)} ${(clienteData.apellido || titular.apellido)}</span>
+        </div>
+        <div class="b-row"><span>Doc.:</span><span>${clienteData.pasaporte || clienteData.dni || titular.dni}</span></div>
+        <div class="b-row"><span>Email:</span><span style="font-size:10px;">${titular.correo}</span></div>
+        <hr>
+        <div class="b-bold" style="font-size:10px;">DETALLE DEL SERVICIO:</div>
+        <div style="font-size:11px;font-weight:600;margin:4px 0;">${nombre}</div>
+        <div class="b-row"><span>Precio unit.:</span><span>S/ ${precio.toFixed(2)}</span></div>
+        <div class="b-row"><span>Pasajeros:</span><span>× ${numeroPax}</span></div>
+        <hr>
+        <div class="b-bold" style="font-size:10px;margin-bottom:3px;">PASAJEROS:</div>
+        ${paxRows}
+        <hr>
+        <div class="b-row"><span>Op. gravadas:</span><span>S/ ${subtotal.toFixed(2)}</span></div>
+        <div class="b-row"><span>IGV (18%):</span><span>S/ ${igv.toFixed(2)}</span></div>
+        <hr>
+        <div class="b-big">TOTAL: S/ ${total.toFixed(2)}</div>
+        <hr>
+        <div class="b-row" style="font-size:10px;">
+          <span>Método:</span>
+          <span>${metodoPago || 'N/A'}</span>
+        </div>
+        <div class="b-row" style="font-size:10px;">
+          <span>N° Transacción:</span>
+          <span style="font-size:9px;">${numTransaccion}</span>
+        </div>
+        <hr>
+        <div class="b-center" style="margin:8px 0;"><span class="b-badge">✓ PAGADO</span></div>
+        <hr>
+        <div class="b-center" style="font-size:10px;">¡Gracias por confiar en IGUAZÚ Tours Express!</div>
+        <div class="b-center" style="font-size:9px;margin-top:4px;">facebook.com/TourExpressIguazu</div>
+        <hr>
+        <div class="b-center" style="font-size:9px;margin-top:4px;">
+          Toda cancelación debe comunicarse a la agencia dentro de las 24 horas
+          posteriores a la reserva. Se aplicará una penalidad del 10% sobre el monto total pagado.
+        </div>
+      `;
+
+      document.getElementById('boleta-wrapper').style.display = 'block';
+      window.scrollTo(0, 0);
+    }
+
+    /* ── TOAST ───────────────────────────────────────── */
+    function showToast(msg, type = 'err') {
+      const existing = document.getElementById('toast-notif');
+      if (existing) existing.remove();
+      const t = document.createElement('div');
+      t.id = 'toast-notif';
+      t.style.cssText = `
+        position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+        background:${type === 'err' ? '#EF4444' : type === 'ok' ? '#10B981' : '#F59E0B'};
+        color:#fff; padding:12px 24px; border-radius:10px;
+        font-family:'Outfit',sans-serif; font-size:14px; font-weight:600;
+        z-index:99999; box-shadow:0 8px 24px rgba(0,0,0,.4);
+        animation:fadeInUp .3s ease; max-width:90vw; text-align:center;
+      `;
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 4500);
+    }
+
+    const toastStyle = document.createElement('style');
+    toastStyle.textContent = `@keyframes fadeInUp {
+      from { opacity:0; transform:translate(-50%,20px); }
+      to   { opacity:1; transform:translate(-50%,0);    }
+    }`;
+    document.head.appendChild(toastStyle);
+  </script>
+</body>
+
+</html>

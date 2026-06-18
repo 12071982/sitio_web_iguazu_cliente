@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paquetes Turísticos — IGUAZÚ Tours Express</title>
+  <link rel="icon" href="assets/img/logo.png" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .hero-paquetes {
+      background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-paquetes::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .skeleton {
+      background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 12px;
+    }
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    .filter-bar { position: sticky; top: 0; z-index: 30; backdrop-filter: blur(12px); }
+    .grupo-card:hover img { transform: scale(1.06); }
+    .grupo-card img { transition: transform 0.5s ease; }
+    #search-input:focus { box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.25); }
+  </style>
+</head>
+<body class="bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 min-h-screen">
+
+  <nav class="bg-white dark:bg-zinc-900 shadow-sm border-b border-gray-100 dark:border-zinc-800">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="text-xl font-extrabold text-green-600 tracking-tight">IGUAZÚ <span class="text-zinc-800 dark:text-white font-light">Tours Express</span></span>
+      </a>
+      <div class="flex items-center gap-6 text-sm font-semibold">
+        <a href="index.html" class="text-zinc-600 dark:text-zinc-300 hover:text-green-600 transition-colors">Inicio</a>
+        <a href="destinos.html" class="text-green-600 border-b-2 border-green-600 pb-0.5">Paquetes</a>
+        <a href="galeria.html" class="text-zinc-600 dark:text-zinc-300 hover:text-green-600 transition-colors">Galería</a>
+        <a href="registro.html" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl transition-colors">Registrarse</a>
+        <a href="https://www.facebook.com/TourExpressIguazu/" target="_blank" class="text-zinc-500 hover:text-green-600 transition-colors"><i class="fab fa-facebook-f"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero-paquetes text-white py-14 px-4">
+    <div class="max-w-4xl mx-auto text-center relative z-10">
+      <p class="text-green-300 font-semibold uppercase tracking-widest text-sm mb-2">
+        <i class="fas fa-map-marked-alt mr-2"></i>Región Junín, Perú
+      </p>
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
+        Elige tu próxima<br><span class="text-green-300">aventura</span>
+      </h1>
+      <p class="text-green-100 text-lg max-w-xl mx-auto mb-8">
+        Paquetes turísticos completos con guía, transporte y experiencias únicas. Paga online de forma segura.
+      </p>
+      <div class="relative max-w-lg mx-auto">
+        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        <input id="search-input" type="text" placeholder="Buscar paquete o destino..."
+          class="w-full pl-11 pr-4 py-4 rounded-2xl bg-white/95 text-zinc-800 font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 shadow-xl text-base">
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-bar bg-white/90 dark:bg-zinc-900/90 border-b border-gray-200 dark:border-zinc-700 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center gap-3">
+      <div class="flex items-center gap-2">
+        <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Tipo:</label>
+        <select id="filter-tipo" class="text-sm py-2 px-3 rounded-xl bg-gray-100 dark:bg-zinc-700 border-0 text-zinc-700 dark:text-zinc-200 font-semibold focus:ring-2 focus:ring-green-400 focus:outline-none">
+          <option value="todos">Todos</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-2">
+        <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Duración:</label>
+        <select id="filter-duracion" class="text-sm py-2 px-3 rounded-xl bg-gray-100 dark:bg-zinc-700 border-0 text-zinc-700 dark:text-zinc-200 font-semibold focus:ring-2 focus:ring-green-400 focus:outline-none">
+          <option value="todos">Cualquiera</option>
+          <option value="1-dia">1 día completo</option>
+          <option value="varios">Varios días (2+ días)</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-2">
+        <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Ordenar:</label>
+        <select id="filter-sort" class="text-sm py-2 px-3 rounded-xl bg-gray-100 dark:bg-zinc-700 border-0 text-zinc-700 dark:text-zinc-200 font-semibold focus:ring-2 focus:ring-green-400 focus:outline-none">
+          <option value="default">Relevancia</option>
+          <option value="precio-asc">Precio: menor a mayor</option>
+          <option value="precio-desc">Precio: mayor a menor</option>
+          <option value="nombre-asc">Nombre A→Z</option>
+          <option value="nombre-desc">Nombre Z→A</option>
+        </select>
+      </div>
+      <div class="ml-auto">
+        <span id="paquetes-count" class="text-sm font-semibold text-zinc-500 dark:text-zinc-400"></span>
+      </div>
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 py-10">
+    <div id="paquetes-skeleton" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div class="rounded-2xl overflow-hidden shadow"><div class="skeleton h-52 w-full"></div><div class="p-5 space-y-3"><div class="skeleton h-5 w-3/4"></div><div class="skeleton h-3 w-1/2"></div><div class="skeleton h-3 w-full"></div><div class="skeleton h-10 w-full mt-4"></div></div></div>
+      <div class="rounded-2xl overflow-hidden shadow"><div class="skeleton h-52 w-full"></div><div class="p-5 space-y-3"><div class="skeleton h-5 w-3/4"></div><div class="skeleton h-3 w-1/2"></div><div class="skeleton h-3 w-full"></div><div class="skeleton h-10 w-full mt-4"></div></div></div>
+      <div class="rounded-2xl overflow-hidden shadow hidden sm:block"><div class="skeleton h-52 w-full"></div><div class="p-5 space-y-3"><div class="skeleton h-5 w-3/4"></div><div class="skeleton h-3 w-1/2"></div><div class="skeleton h-3 w-full"></div><div class="skeleton h-10 w-full mt-4"></div></div></div>
+      <div class="rounded-2xl overflow-hidden shadow hidden lg:block"><div class="skeleton h-52 w-full"></div><div class="p-5 space-y-3"><div class="skeleton h-5 w-3/4"></div><div class="skeleton h-3 w-1/2"></div><div class="skeleton h-3 w-full"></div><div class="skeleton h-10 w-full mt-4"></div></div></div>
+    </div>
+    <div id="paquetes-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" style="display:none"></div>
+  </main>
+
+  <footer class="bg-white dark:bg-zinc-800 border-t border-gray-200 dark:border-zinc-700 py-8 mt-10">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="text-xl font-extrabold text-green-600">IGUAZÚ <span class="text-zinc-600 dark:text-zinc-300 font-light">Tours Express</span></div>
+      <div class="flex gap-6 text-sm text-zinc-500">
+        <a href="#" class="hover:text-green-600 transition-colors">Política de privacidad</a>
+        <a href="#" class="hover:text-green-600 transition-colors">Términos y Condiciones</a>
+      </div>
+      <p class="text-sm text-zinc-400">© 2025 Creado por Yésica. Todos los derechos reservados</p>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      const API_BASE = 'https://localhost:7047/api';
+      const grid = document.getElementById('paquetes-grid');
+      const searchInput = document.getElementById('search-input');
+      const filterTipo = document.getElementById('filter-tipo');
+      const filterSort = document.getElementById('filter-sort');
+      const filterDuracion = document.getElementById('filter-duracion');
+      const contadorEl = document.getElementById('paquetes-count');
+      const skeletonEl = document.getElementById('paquetes-skeleton');
+
+      let todosLosPaquetes = [];
+
+      fetch(`${API_BASE}/Paquete`)
+        .then(res => res.ok ? res.json() : Promise.reject(`HTTP ${res.status}`))
+        .then(paquetes => {
+          todosLosPaquetes = paquetes;
+          if (skeletonEl) skeletonEl.style.display = 'none';
+          if (grid) grid.style.display = 'grid';
+          renderPaquetes(todosLosPaquetes);
+          poblarFiltros(todosLosPaquetes);
+        })
+        .catch(err => {
+          console.error(err);
+          if (skeletonEl) skeletonEl.style.display = 'none';
+          grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500"><i class="fas fa-exclamation-triangle text-4xl mb-4 text-yellow-400"></i><p class="font-semibold text-lg">No se pudieron cargar los paquetes</p><p class="text-sm mt-1">Verifica que el servidor esté en ejecución en ${API_BASE}</p></div>`;
+          grid.style.display = 'grid';
+        });
+
+      function renderPaquetes(lista) {
+        grid.innerHTML = '';
+        if (lista.length === 0) {
+          grid.innerHTML = `<div class="col-span-full text-center py-16 text-gray-500"><i class="fas fa-search text-4xl mb-3 text-gray-300"></i><p class="font-semibold">Sin resultados para tu búsqueda</p><p class="text-sm mt-1">Intenta con otros filtros</p></div>`;
+          if (contadorEl) contadorEl.innerText = '0 paquetes';
+          return;
+        }
+        if (contadorEl) contadorEl.innerText = `${lista.length} paquete${lista.length > 1 ? 's' : ''}`;
+
+        lista.forEach(pkg => {
+          const id = pkg.iD_Paquete;
+          const nombre = pkg.nombre || 'Sin nombre';
+          const descripcion = pkg.descripcion || '';
+          const precio = parseFloat(pkg.precio_Base || 0);
+          const duracion = pkg.duracion || '';
+          const imagen = pkg.imagen && pkg.imagen.trim() !== '' ? pkg.imagen : 'assets/img/viaje.jpeg';
+          const tipo = pkg.tipo || 'Tour';
+          const tipoBadge = {
+            'Aventura': 'bg-orange-500', 'Cultural': 'bg-purple-500',
+            'Naturaleza': 'bg-green-500', 'Relax': 'bg-blue-400',
+            'Familiar': 'bg-green-600', 'Económico': 'bg-amber-600',
+            'Estándar': 'bg-sky-600', 'Premium': 'bg-rose-600',
+            'Tour': 'bg-green-600'
+          };
+          const badgeColor = tipoBadge[tipo] || 'bg-green-600';
+
+          const card = document.createElement('div');
+          card.className = 'grupo-card bg-white dark:bg-zinc-800 rounded-2xl shadow-md overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-gray-100 dark:border-zinc-700';
+          card.innerHTML = `
+            <div class="relative overflow-hidden h-52">
+              <img src="${imagen}" alt="${nombre}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='assets/img/viaje.jpeg'">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              <span class="absolute top-3 left-3 ${badgeColor} text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wide">${tipo}</span>
+              <span class="absolute top-3 right-3 bg-white/90 dark:bg-zinc-800/90 text-green-700 text-sm font-extrabold px-3 py-1 rounded-full">S/ ${precio.toFixed(2)}</span>
+            </div>
+            <div class="p-5 flex flex-col flex-grow">
+              <h2 class="text-lg font-bold mb-1 text-zinc-800 dark:text-white leading-tight">${nombre}</h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4 flex-grow">${descripcion}</p>
+              <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mb-4">
+                ${duracion ? `<span><i class="fas fa-clock text-green-500 mr-1"></i>${duracion}</span>` : ''}
+                <span><i class="fas fa-calendar-check text-green-500 mr-1"></i>Disponible</span>
+              </div>
+              <div class="flex items-center justify-between gap-2 mt-auto">
+                <div><p class="text-xs text-gray-400">Precio por persona</p><p class="text-xl font-black text-green-600">S/ ${precio.toFixed(2)}</p></div>
+                <a href="destino-single.html?iD_Paquete=${id}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-5 rounded-xl transition-colors flex items-center gap-2 text-sm"><i class="fas fa-shopping-cart"></i> Reservar</a>
+              </div>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+
+      function poblarFiltros(paquetes) {
+        if (!filterTipo) return;
+        const tipos = [...new Set(paquetes.map(p => p.tipo).filter(Boolean))];
+        tipos.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t.toLowerCase();
+          opt.innerText = t;
+          filterTipo.appendChild(opt);
+        });
+      }
+
+      function aplicarFiltros() {
+        const texto = (searchInput?.value || '').toLowerCase().trim();
+        const tipoVal = filterTipo?.value || 'todos';
+        const sortVal = filterSort?.value || 'default';
+        const durVal = filterDuracion?.value || 'todos';
+
+        let resultado = todosLosPaquetes.filter(p => {
+          const nombreMatch = (p.nombre || '').toLowerCase().includes(texto);
+          const descMatch = (p.descripcion || '').toLowerCase().includes(texto);
+          const tipoMatch = tipoVal === 'todos' || (p.tipo || '').toLowerCase() === tipoVal;
+
+          let durMatch = true;
+          const duracion = (p.duracion || '').toLowerCase();
+          if (durVal === '1-dia') durMatch = duracion.includes('1 día') || duracion === '1 día';
+          else if (durVal === 'varios') durMatch = /[2-9]\s*días/.test(duracion) || duracion.includes('2 días') || duracion.includes('3 días');
+
+          return (nombreMatch || descMatch) && tipoMatch && durMatch;
+        });
+
+        switch (sortVal) {
+          case 'precio-asc': resultado.sort((a,b) => (a.precio_Base||0) - (b.precio_Base||0)); break;
+          case 'precio-desc': resultado.sort((a,b) => (b.precio_Base||0) - (a.precio_Base||0)); break;
+          case 'nombre-asc': resultado.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||'')); break;
+          case 'nombre-desc': resultado.sort((a,b) => (b.nombre||'').localeCompare(a.nombre||'')); break;
+        }
+        renderPaquetes(resultado);
+      }
+
+      searchInput?.addEventListener('input', aplicarFiltros);
+      filterTipo?.addEventListener('change', aplicarFiltros);
+      filterSort?.addEventListener('change', aplicarFiltros);
+      filterDuracion?.addEventListener('change', aplicarFiltros);
+    })();
+  </script>
+</body>
+</html>

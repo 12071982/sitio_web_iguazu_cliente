@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro — IGUAZÚ Tours Express</title>
+  <link rel="icon" href="assets/img/logo.png" type="image/x-icon" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .hero-registro {
+      background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-registro::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .field-group input {
+      width: 100%;
+      padding: 10px 14px 10px 42px;
+      border: 2px solid #E5E7EB;
+      border-radius: 10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      color: #111827;
+      background: #fff;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field-group input:focus {
+      border-color: #16a34a;
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+    }
+    .field-group input::placeholder { color: #9CA3AF; }
+    .field-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9CA3AF;
+      font-size: 14px;
+      pointer-events: none;
+    }
+    /* Spinner y mensajes */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(0,0,0,.1);
+      border-top-color: #16a34a;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .dni-msg {
+      font-size: 12px;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dni-msg.ok { color: #16a34a; }
+    .dni-msg.err { color: #dc2626; }
+    .dni-msg.warn { color: #f59e0b; }
+    .verificape-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #e6f7ec;
+      color: #16a34a;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body class="bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 min-h-screen">
+
+  <!-- NAV -->
+  <nav class="bg-white dark:bg-zinc-900 shadow-sm border-b border-gray-100 dark:border-zinc-800">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="text-xl font-extrabold text-green-600 tracking-tight">IGUAZÚ <span class="text-zinc-800 dark:text-white font-light">Tours Express</span></span>
+      </a>
+      <div class="flex items-center gap-6 text-sm font-semibold">
+        <a href="index.html" class="text-zinc-600 dark:text-zinc-300 hover:text-green-600 transition-colors">Inicio</a>
+        <a href="destinos.html" class="text-zinc-600 dark:text-zinc-300 hover:text-green-600 transition-colors">Paquetes</a>
+        <a href="galeria.html" class="text-zinc-600 dark:text-zinc-300 hover:text-green-600 transition-colors">Galería</a>
+        <a href="https://www.facebook.com/TourExpressIguazu/" target="_blank" class="text-zinc-500 hover:text-green-600 transition-colors"><i class="fab fa-facebook-f"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero-registro text-white py-12 px-4">
+    <div class="max-w-4xl mx-auto text-center relative z-10">
+      <p class="text-green-300 font-semibold uppercase tracking-widest text-sm mb-2">
+        <i class="fas fa-user-plus mr-2"></i>Únete a nosotros
+      </p>
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-3 leading-tight">
+        Crea tu <span class="text-green-300">cuenta</span>
+      </h1>
+      <p class="text-green-100 text-lg max-w-xl mx-auto">
+        Regístrate y accede a paquetes exclusivos, reservas rápidas y más beneficios para viajeros.
+      </p>
+    </div>
+  </div>
+
+  <!-- FORMULARIO -->
+  <main class="container mx-auto px-4 py-12 max-w-xl">
+    <div class="bg-white dark:bg-zinc-800 rounded-2xl shadow-md border border-gray-100 dark:border-zinc-700 p-8">
+      <h2 class="text-xl font-extrabold mb-6 text-zinc-800 dark:text-white">Formulario de Registro</h2>
+      <form id="registerForm" class="space-y-4">
+
+        <!-- DNI / Pasaporte (PRIMERO) -->
+        <div>
+          <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1">DNI / Pasaporte <span class="text-red-500">*</span></label>
+          <div class="relative field-group">
+            <i class="fas fa-id-card field-icon"></i>
+            <input type="text" id="pasaporte" placeholder="Número de documento" required onblur="verificarDNIReniec(this.value)" />
+            <span id="dni-spinner" class="hidden" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%);">
+              <div class="spinner"></div>
+            </span>
+          </div>
+          <div id="dni-msg" class="dni-msg"></div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1">Nombre</label>
+            <div class="relative field-group">
+              <i class="fas fa-user field-icon"></i>
+              <input type="text" id="nombre" placeholder="Tu nombre" required />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1">Apellido</label>
+            <div class="relative field-group">
+              <i class="fas fa-user field-icon"></i>
+              <input type="text" id="apellido" placeholder="Tu apellido" required />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1">Correo electrónico</label>
+          <div class="relative field-group">
+            <i class="fas fa-envelope field-icon"></i>
+            <input type="email" id="correo" placeholder="correo@ejemplo.com" required />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1">Teléfono</label>
+          <div class="relative field-group">
+            <i class="fas fa-phone field-icon"></i>
+            <input type="tel" id="telefono" placeholder="+51 999 000 000" required />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1">Dirección</label>
+          <div class="relative field-group">
+            <i class="fas fa-map-marker-alt field-icon"></i>
+            <input type="text" id="direccion" placeholder="Tu dirección" required />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1">Fecha de nacimiento</label>
+          <div class="relative field-group">
+            <i class="fas fa-calendar field-icon"></i>
+            <input type="date" id="fecha_Nacimiento" required />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1">Nacionalidad</label>
+          <div class="relative field-group">
+            <i class="fas fa-flag field-icon"></i>
+            <input type="text" id="nacionalidad" placeholder="Ej: Peruana" required />
+          </div>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-colors flex items-center justify-center gap-2 text-base mt-2">
+          <i class="fas fa-user-plus"></i> Registrarse
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <!-- MODAL -->
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center hidden z-50">
+    <div class="bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 p-8 rounded-2xl shadow-2xl text-center max-w-md w-full mx-4 relative">
+      <button onclick="cerrarModal()" class="absolute top-3 right-4 text-xl text-gray-400 hover:text-red-500 transition-colors">&times;</button>
+      <div id="modalIcon" class="text-5xl mb-4">✅</div>
+      <p id="modalMensaje" class="text-lg font-bold text-zinc-800 dark:text-white mb-3"></p>
+      <p id="cuentaRegresiva" class="text-3xl font-extrabold text-green-600"></p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-white dark:bg-zinc-800 border-t border-gray-200 dark:border-zinc-700 py-8 mt-4">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="text-xl font-extrabold text-green-600">IGUAZÚ <span class="text-zinc-600 dark:text-zinc-300 font-light">Tours Express</span></div>
+      <div class="flex gap-6 text-sm text-zinc-500">
+        <a href="#" class="hover:text-green-600 transition-colors">Política de privacidad</a>
+        <a href="#" class="hover:text-green-600 transition-colors">Términos y Condiciones</a>
+      </div>
+      <p class="text-sm text-zinc-400">© 2025 Creado por Yésica. Todos los derechos reservados</p>
+    </div>
+  </footer>
+
+  <script>
+    // Configuración de API VerificaPE
+    const VERIFICAPE_TOKEN = 'vp_live_aada01fa0e4c4fa290b3e042fc612bb8';
+    const VERIFICAPE_API = 'https://corsproxy.io/?https://api.verificape.com/v2/dni';
+    let dniCache = {};
+
+    // Verificar DNI con RENIEC
+    async function verificarDNIReniec(dni) {
+      if (!dni || dni.length < 8) return;
+
+      const msgEl = document.getElementById('dni-msg');
+      const spinnerEl = document.getElementById('dni-spinner');
+      
+      spinnerEl.classList.remove('hidden');
+      msgEl.innerHTML = '<span class="spinner" style="width:12px;height:12px;"></span> Verificando datos...';
+      msgEl.className = 'dni-msg warn';
+
+      if (dni in dniCache) {
+        spinnerEl.classList.add('hidden');
+        if (dniCache[dni].success) {
+          rellenarDatosReniec(dniCache[dni].data);
+          msgEl.innerHTML = `
+            <i class="fas fa-check-circle"></i> Datos verificados con RENIEC
+            <span class="verificape-badge"><i class="fas fa-shield-check"></i>VerificaPE</span>
+          `;
+          msgEl.className = 'dni-msg ok';
+        } else {
+          msgEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${dniCache[dni].error || 'No se encontraron datos. Completa manualmente.'}`;
+          msgEl.className = 'dni-msg warn';
+        }
+        return;
+      }
+
+      try {
+        const response = await fetch(`${VERIFICAPE_API}/${dni}`, {
+          method: 'GET',
+          headers: { 'Authorization': `Bearer ${VERIFICAPE_TOKEN}` }
+        });
+
+        spinnerEl.classList.add('hidden');
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          const mensaje = errorData.message || 'No se encontraron datos en RENIEC.';
+          dniCache[dni] = { success: false, error: mensaje };
+          msgEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${mensaje}`;
+          msgEl.className = 'dni-msg warn';
+          return;
+        }
+
+        const responseData = await response.json();
+        if (!responseData.success || !responseData.data) {
+          throw new Error('La API no devolvió datos válidos');
+        }
+
+        const persona = responseData.data;
+        dniCache[dni] = { success: true, data: persona };
+        rellenarDatosReniec(persona);
+        msgEl.innerHTML = `
+          <i class="fas fa-check-circle"></i> Datos verificados con RENIEC
+          <span class="verificape-badge"><i class="fas fa-shield-check"></i>VerificaPE</span>
+        `;
+        msgEl.className = 'dni-msg ok';
+
+      } catch (error) {
+        console.error('Error en verificación DNI:', error);
+        spinnerEl.classList.add('hidden');
+        dniCache[dni] = { success: false, error: 'Error de conexión. Completa los datos manualmente.' };
+        msgEl.innerHTML = `<i class="fas fa-times-circle"></i> Error de conexión. Completa los datos manualmente.`;
+        msgEl.className = 'dni-msg err';
+      }
+    }
+
+    function rellenarDatosReniec(persona) {
+      const nombre = persona.names || '';
+      const apellidoPaterno = persona.paternalSurname || '';
+      const apellidoMaterno = persona.maternalSurname || '';
+      const apellidoCompleto = `${apellidoPaterno} ${apellidoMaterno}`.trim();
+      const fechaNacRaw = persona.birthDate || ''; // "DD/MM/YYYY"
+
+      let fechaFormateada = '';
+      if (fechaNacRaw && fechaNacRaw.includes('/')) {
+        const partes = fechaNacRaw.split('/');
+        if (partes.length === 3) {
+          const dia = partes[0].padStart(2, '0');
+          const mes = partes[1].padStart(2, '0');
+          const anio = partes[2];
+          fechaFormateada = `${anio}-${mes}-${dia}`;
+        }
+      }
+
+      if (nombre) document.getElementById('nombre').value = nombre;
+      if (apellidoCompleto) document.getElementById('apellido').value = apellidoCompleto;
+      if (fechaFormateada) document.getElementById('fecha_Nacimiento').value = fechaFormateada;
+      document.getElementById('nacionalidad').value = 'Peruana';
+    }
+
+    // --- Lógica original de registro (sin cambios) ---
+    function mostrarModal(mensaje, redirigir = false, esError = false) {
+      const modal = document.getElementById("modal");
+      const icon = document.getElementById("modalIcon");
+      const mensajeElemento = document.getElementById("modalMensaje");
+      const cuenta = document.getElementById("cuentaRegresiva");
+
+      icon.textContent = esError ? "🟢" : "✅";
+      mensajeElemento.innerText = mensaje;
+      cuenta.innerText = "";
+      modal.classList.remove("hidden");
+
+      if (redirigir) {
+        let contador = 3;
+        cuenta.innerText = contador;
+        const intervalo = setInterval(() => {
+          contador--;
+          cuenta.innerText = contador;
+          if (contador === 0) {
+            clearInterval(intervalo);
+            window.location.href = "index.html";
+          }
+        }, 1000);
+      }
+    }
+
+    function cerrarModal() {
+      document.getElementById("modal").classList.add("hidden");
+    }
+
+    document.getElementById("registerForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const correoInput = document.getElementById("correo").value.trim().toLowerCase();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(correoInput)) {
+        mostrarModal("Por favor, ingresa un correo electrónico válido.", false, true);
+        return;
+      }
+
+      let fechaNacimiento = document.getElementById("fecha_Nacimiento").value;
+      let fechaFormateada = "";
+      if (fechaNacimiento) {
+        const [anio, mes, dia] = fechaNacimiento.split("-");
+        fechaFormateada = `${dia}/${mes}/${anio}`;
+      }
+
+      const cliente = {
+        iD_Usuario: 1,
+        frecuencia_Viajero: "Normal",
+        nombre: document.getElementById("nombre").value,
+        apellido: document.getElementById("apellido").value,
+        correo: correoInput,
+        telefono: document.getElementById("telefono").value,
+        direccion: document.getElementById("direccion").value,
+        fecha_Nacimiento: fechaFormateada,
+        nacionalidad: document.getElementById("nacionalidad").value,
+        pasaporte: document.getElementById("pasaporte").value,
+      };
+
+      fetch(`https://localhost:7047/api/Cliente/email?correo=${encodeURIComponent(cliente.correo)}`)
+        .then(checkRes => {
+          if (checkRes.ok) {
+            throw new Error("Ya eres un cliente registrado.");
+          } else if (checkRes.status === 404) {
+            return fetch("https://localhost:7047/api/Cliente", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(cliente)
+            });
+          } else {
+            throw new Error("Error al verificar el correo.");
+          }
+        })
+        .then(response => {
+          if (response && response.ok) {
+            mostrarModal("¡Ya formas parte de nuestros clientes! Serás redirigido al inicio en...", true);
+          } else {
+            return response.text().then(text => {
+              throw new Error("Error al registrar: " + text);
+            });
+          }
+        })
+        .catch(error => {
+          const mensajeLimpio = error.message.includes("Ya eres un cliente")
+            ? "Ya eres un cliente registrado."
+            : error.message;
+          mostrarModal(mensajeLimpio, false, true);
+        });
+    });
+  </script>
+</body>
+</html>

@@ -223,8 +223,7 @@
 
   <script>
     // Configuración de API VerificaPE
-    const VERIFICAPE_TOKEN = 'vp_live_aada01fa0e4c4fa290b3e042fc612bb8';
-    const VERIFICAPE_API = 'https://corsproxy.io/?https://api.verificape.com/v2/dni';
+    const VERIFICAPE_API = 'https://illary.somee.com/api/VerificaPe/v2/dni';
     let dniCache = {};
 
     // Verificar DNI con RENIEC
@@ -256,8 +255,7 @@
 
       try {
         const response = await fetch(`${VERIFICAPE_API}/${dni}`, {
-          method: 'GET',
-          headers: { 'Authorization': `Bearer ${VERIFICAPE_TOKEN}` }
+          method: 'GET'
         });
 
         spinnerEl.classList.add('hidden');
@@ -279,10 +277,7 @@
         const persona = responseData.data;
         dniCache[dni] = { success: true, data: persona };
         rellenarDatosReniec(persona);
-        msgEl.innerHTML = `
-          <i class="fas fa-check-circle"></i> Datos verificados con RENIEC
-          <span class="verificape-badge"><i class="fas fa-shield-check"></i>VerificaPE</span>
-        `;
+        msgEl.innerHTML = `<i class="fas fa-check-circle"></i> Datos verificados con RENIEC <span class="verificape-badge"><i class="fas fa-shield-check"></i>VerificaPE</span>`;
         msgEl.className = 'dni-msg ok';
 
       } catch (error) {

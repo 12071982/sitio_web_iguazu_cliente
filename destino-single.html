@@ -1005,8 +1005,8 @@
   <script>
     const API = 'https://iguazu.bsite.net/api';
     // const API = 'https://localhost:7047/api';
-    const VERIFICAPE_TOKEN = 'vp_live_aada01fa0e4c4fa290b3e042fc612bb8';
-    const VERIFICAPE_API = 'https://corsproxy.io/?https://api.verificape.com/v2/dni';
+    // const VERIFICAPE_TOKEN = 'vp_live_aada01fa0e4c4fa290b3e042fc612bb8';
+    const VERIFICAPE_API = API + '/VerificaPe/v2/dni';
     const YAPE_TEST_CODE = '123456';
 
     /* ── ESTADO GLOBAL ──────────────────────────────────── */
@@ -1206,14 +1206,16 @@
         return;
       }
       try {
-        const response = await fetch(`${VERIFICAPE_API}/${dni}`,
-          { headers: { 'Authorization': `Bearer ${VERIFICAPE_TOKEN}` } });
+        const response = await fetch(`${VERIFICAPE_API}/${dni}`, {
+          method: 'GET'
+        });
         if (spinnerEl) spinnerEl.classList.add('hidden');
         if (!response.ok) {
           const error = await response.json().catch(() => ({}));
-          dniCache[dni] = { success: false, error: error.message || 'No se encontraron datos.' };
+          const mensajeError = error.message || 'No se encontraron datos en RENIEC.';
+          dniCache[dni] = { success: false, error: mensajeError };
           msgEl.className = 'info-msg warn';
-          msgEl.textContent = dniCache[dni].error;
+          msgEl.textContent = mensajeError;
           if (idx === 0) await buscarClientePorDNI(0, dni, msgEl);
           return;
         }
@@ -1222,14 +1224,15 @@
         const persona = responseData.data;
         dniCache[dni] = { success: true, data: persona };
         rellenarPasajeroReniec(idx, persona);
-        mostrarOkDNI(msgEl);
+        msgEl.className = 'info-msg ok';
+        msgEl.innerHTML = `<span style="display:flex;align-items:center;gap:6px;"><i class="fas fa-check-circle"></i> Datos verificados con RENIEC <span class="verificape-badge"><i class="fas fa-shield-check"></i>VerificaPE</span></span>`;
         if (idx === 0) await buscarClientePorDNI(0, dni, msgEl);
       } catch (e) {
-        console.error(e);
+        console.error('Error verificando DNI:', e);
         if (spinnerEl) spinnerEl.classList.add('hidden');
-        dniCache[dni] = { success: false, error: 'Error de conexión.' };
+        dniCache[dni] = { success: false, error: 'Error de conexión. Completa los datos manualmente.' };
         msgEl.className = 'info-msg err';
-        msgEl.textContent = 'Error de conexión.';
+        msgEl.textContent = 'Error de conexión. Completa los datos manualmente.';
         if (idx === 0) await buscarClientePorDNI(0, dni, msgEl);
       }
     }
